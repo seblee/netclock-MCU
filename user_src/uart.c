@@ -9,9 +9,6 @@
 #include <iostm8l151g4.h> // CPU型号
 #include "Pin_define.h"   // 管脚定义
 #include "initial.h"	  // 初始化  预定义
-#include "ram.h"		  // RAM定义
-
-#include "eeprom.h" // eeprom
 
 #define TXD1_enable (USART1_CR2 = 0x08) // 允许发送
 #define RXD1_enable (USART1_CR2 = 0x24) // 允许接收及其中断
@@ -45,20 +42,6 @@ void UART1_RX_RXNE(void)
 { // RXD中断服务程序
 	unsigned char dat;
 	dat = USART1_DR; // 接收数据
-
-	if (dat == '(')
-		SIO_cnt = 0;
-	SIO_buff[SIO_cnt] = dat;
-	SIO_cnt = (SIO_cnt + 1) & 0x1F;
-	if (dat == ')')
-	{
-		for (dat = 0; dat < SIO_cnt; dat++)
-		{
-			SIO_DATA[dat] = SIO_buff[dat];
-		}
-		BIT_SIO = 1; // 标志
-					 //SIO_TOT = 20;
-	}
 }
 
 //--------------------------------------------

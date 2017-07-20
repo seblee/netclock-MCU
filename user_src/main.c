@@ -20,18 +20,14 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include <iostm8l151g4.h> // CPU型号
-//#include "stm8l15x.h"
-#include "Pin_define.h" // 管脚定义
-#include "initial.h"    // 初始????? 预定?????#include "ram.h"		// RAM定义
-#include "eeprom.h"
-#include "ADF7030_1.h"
-#include "Timer.h" // 定时?????#include "eeprom.h"		// eeprom
-#include "uart.h"  // uart
-#include "lcd.h"   // lcd
+#include <iostm8l151g4.h> // CPU鍨嬪彿
+#include "Pin_define.h"   // 绠¤剼瀹氫箟
+#include "initial.h"      // 鍒濆????? 棰勫畾?????
+#include "Timer.h"        // 瀹氭椂?????
+#include "uart.h"         // uart
+#include "lcd.h"          // lcd
 #include "stdlib.h"
 #include "time.h"
-#include "ID_Decode.h"
 /** @addtogroup STM8L15x_StdPeriph_Template
   * @{
   */
@@ -56,33 +52,18 @@ u16 KEY_COUNT = 0;
 void main(void)
 {
     u8 Key_Value;
-    _DI();       // 关全局中断
-    RAM_clean(); // 清除RAM
+    _DI();       // 鍏冲叏灞�涓柇
+    RAM_clean(); // 娓呴櫎RAM
     VHF_GPIO_INIT();
     SysClock_Init();
-    InitialFlashReg();
-    eeprom_sys_load();
-    EXIT_init();
     TIM4_Init();
     UART1_INIT(); // UART1 for PC Software
-    _EI();        // 允许中断
+    _EI();        // 鍏佽涓柇
     WDT_init();
     lcd_init();
     ClearWDT(); // Service the WDT
-    ADF7030Init();
     beep_init();
     srand((unsigned)time(NULL));
-    TX_DataLoad(10010101, OpenMode, &CONST_TXPACKET_DATA_20000AF0[0]);
-    BEEP_and_LED();
-    while (WORK_TEST == 0) //测试模式
-    {
-        ClearWDT(); // Service the WDT
-        LCDTestDisplay();
-        //        TestCarrier(KEY_SCAN(0));
-        //        ModeTrans(KEY_SCAN(0));
-        TestFunV2(KEY_SCAN(0));
-        LEDCtr();
-    }
     while (1)
     {
         ClearWDT(); // Service the WDT
@@ -96,60 +77,16 @@ void main(void)
             case KEY_Empty:
                 break;
             case KEY_SW2_Down:
-                TX_DataLoad(rand(), OpenMode, &CONST_TXPACKET_DATA_20000AF0[0]);
                 break;
             case KEY_SW3_Down:
-                TX_DataLoad(2, StopMode, &CONST_TXPACKET_DATA_20000AF0[0]);
                 break;
             case KEY_SW4_Down:
-                TX_DataLoad(3, CloseMode, &CONST_TXPACKET_DATA_20000AF0[0]);
                 break;
             default:
                 break;
             }
-            if (FLAG_SW10 == 0)
-            {
-                ADF7030_WRITING_PROFILE_FROM_POWERON();
-                ADF7030_TRANSMITTING_FROM_POWEROFF();
-                YELLOWLED_OFF();
-                FLAG_SW10 = 1;
-            }
         }
-        else
-        {
-            if (FLAG_SW10 == 1)
-            {
-                KEY_COUNT++;
-                if (KEY_COUNT > 500)
-                {
-                    KEY_COUNT = 0;
-                    FLAG_SW10 = 0;
-                    ADF7030_WRITING_PROFILE_FROM_POWERON();
-                    ADF7030_RECEIVING_FROM_POWEROFF();
-                    // ADF7030_ACC_FROM_POWEROFF();
-                }
-            }
-        }
-        //        ID_Decode_IDCheck();
-        SCAN_RECEIVE_PACKET();
     }
-
-    //    while (1)
-    //    {
-    //        rand_data=rand();
-    //        ClearWDT(); // Service the WDT
-    //        /*
-    //        ID_Decode_IDCheck();
-    //        if(time_Login_exit_256==0)ID_Decode_OUT();
-    //        Freq_Scanning();
-    //        ID_learn();
-    //        if(rxphase!=0)READ_RSSI_avg();
-    //        lcd_desplay();
-    //
-    //        if((RAM_rssi_AVG>=60)||(FG_Receiver_LED_RX==1))LED_YELLOW=1;   //26   35
-    //        else if((RAM_rssi_AVG<=59)&&(FG_Receiver_LED_RX==0))LED_YELLOW=0;  //25  34
-    //          */
-    //    }
 }
 
 #ifdef USE_FULL_ASSERT

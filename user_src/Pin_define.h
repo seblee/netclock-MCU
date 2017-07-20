@@ -10,19 +10,19 @@
 /***********************************************************************/
 #include "Timer.h"
 
-//ÒÔÏÂÊÇIO¶¨Òå
-/********************LED¼Ä´æÆ÷*****************************************/
+//ä»¥ä¸‹æ˜¯IOå®šä¹‰
+/********************LEDå¯„å­˜å™¨*****************************************/
 #define LED_ON 1
 #define LED_OFF 0
-#define LED_YELLOW PC_ODR_ODR0     //»ÆµÆ
-#define LED_YELLOW_DDR PC_DDR_DDR0 //»ÆµÆ·½Ïò
-#define LED_YELLOW_CR1 PC_CR1_C10  //»ÆµÆÀàĞÍ
-#define LED_YELLOW_CR2 PC_CR2_C20  //»ÆµÆÊä³öÆµÂÊ
+#define LED_YELLOW PC_ODR_ODR0     //é»„ç¯
+#define LED_YELLOW_DDR PC_DDR_DDR0 //é»„ç¯æ–¹å‘
+#define LED_YELLOW_CR1 PC_CR1_C10  //é»„ç¯ç±»å‹
+#define LED_YELLOW_CR2 PC_CR2_C20  //é»„ç¯è¾“å‡ºé¢‘ç‡
 
-#define LED_RED PC_ODR_ODR1     //ºìµÆ
-#define LED_RED_DDR PC_DDR_DDR1 //·½Ïò
-#define LED_RED_CR1 PC_CR1_C11  //ÀàĞÍ
-#define LED_RED_CR2 PC_CR2_C21  //Êä³öÆµÂÊ
+#define LED_RED PC_ODR_ODR1     //çº¢ç¯
+#define LED_RED_DDR PC_DDR_DDR1 //æ–¹å‘
+#define LED_RED_CR1 PC_CR1_C11  //ç±»å‹
+#define LED_RED_CR2 PC_CR2_C21  //è¾“å‡ºé¢‘ç‡
 
 #define YELLOWLED_FLASH_SECOND() \
     {                            \
@@ -56,37 +56,37 @@
         LedREDTimer = 60;   \
     }
 
-/********************LCD¼Ä´æÆ÷*****************************************/
-#define PIN_LCD_SCLK PD_ODR_ODR1  // Êä³ö£»LCD´®ĞĞÊ±ÖÓ(¡Ì)
-#define PIN_LCD_RST PD_ODR_ODR2   // Êä³ö£»LCD¸´Î»½Å  µÍµçÆ½ÓĞĞ§(¡Ì)
-#define PIN_LCD_SDATA PB_ODR_ODR1 // Êä³ö£»LCD´®ĞĞÊı¾İ(¡Ì)
-#define PIN_LCD_A0_RS PD_ODR_ODR0 // Êä³ö£»LCDÃüÁîÊı¾İÑ¡Ôñ¶Ë  0--ÃüÁî   1--Êı¾İ(¡Ì)
-#define PIN_LCD_SEL PD_ODR_ODR3   // Êä³ö£»Ğ¾Æ¬Æ¬Ñ¡   µÍµçÆ½ÓĞĞ§(¡Ì)
-#define PIN_LCD_LED PA_ODR_ODR3
+/********************LCDå¯„å­˜å™¨*****************************************/
+#define PIN_LCD_SCLK PD_ODR_ODR3  // è¾“å‡ºï¼›LCDä¸²è¡Œæ—¶é’Ÿ(âˆš)
+#define PIN_LCD_RST PB_ODR_ODR1   // è¾“å‡ºï¼›LCDå¤ä½è„š  ä½ç”µå¹³æœ‰æ•ˆ(âˆš)
+#define PIN_LCD_SDATA PD_ODR_ODR2 // è¾“å‡ºï¼›LCDä¸²è¡Œæ•°æ®(âˆš)
+#define PIN_LCD_A0_RS PB_ODR_ODR0 // è¾“å‡ºï¼›LCDå‘½ä»¤æ•°æ®é€‰æ‹©ç«¯  0--å‘½ä»¤   1--æ•°æ®(âˆš)
+#define PIN_LCD_SEL PB_ODR_ODR2   // è¾“å‡ºï¼›èŠ¯ç‰‡ç‰‡é€‰   ä½ç”µå¹³æœ‰æ•ˆ(âˆš)
+#define PIN_LCD_LED PB_ODR_ODR7   // èƒŒå…‰
 
-#define PIN_LCD_SCLK_DDR PD_DDR_DDR1  // Output
-#define PIN_LCD_RST_DDR PD_DDR_DDR2   // Output
-#define PIN_LCD_SDATA_DDR PB_DDR_DDR1 // Output
-#define PIN_LCD_A0_RS_DDR PD_DDR_DDR0 // Output
-#define PIN_LCD_SEL_DDR PD_DDR_DDR3   // Output
-#define PIN_LCD_LED_DDR PA_DDR_DDR3   // Output
+#define PIN_LCD_SCLK_DDR PD_DDR_DDR3  // Output
+#define PIN_LCD_RST_DDR PB_DDR_DDR1   // Output
+#define PIN_LCD_SDATA_DDR PD_DDR_DDR2 // Output
+#define PIN_LCD_A0_RS_DDR PB_DDR_DDR0 // Output
+#define PIN_LCD_SEL_DDR PB_DDR_DDR2   // Output
+#define PIN_LCD_LED_DDR PB_DDR_DDR7   // Output
 
-#define PIN_LCD_SCLK_CR1 PD_CR1_C11  // Output
-#define PIN_LCD_RST_CR1 PD_CR1_C12   // Output
-#define PIN_LCD_SDATA_CR1 PB_CR1_C11 // Output
-#define PIN_LCD_A0_RS_CR1 PD_CR1_C10 // Output
-#define PIN_LCD_SEL_CR1 PD_CR1_C13   // Output
-#define PIN_LCD_LED_CR1 PA_CR1_C13   // Output
+#define PIN_LCD_SCLK_CR1 PD_CR1_C13  // Output
+#define PIN_LCD_RST_CR1 PB_CR1_C11   // Output
+#define PIN_LCD_SDATA_CR1 PD_CR1_C12 // Output
+#define PIN_LCD_A0_RS_CR1 PB_CR1_C10 // Output
+#define PIN_LCD_SEL_CR1 PB_CR1_C12   // Output
+#define PIN_LCD_LED_CR1 PB_CR1_C17   // Output
 
-#define PIN_LCD_SCLK_CR2 PD_CR2_C21  // Output
-#define PIN_LCD_RST_CR2 PD_CR2_C22   // Output
-#define PIN_LCD_SDATA_CR2 PB_CR2_C21 // Output
-#define PIN_LCD_A0_RS_CR2 PD_CR2_C20 // Output
-#define PIN_LCD_SEL_CR2 PD_CR2_C23   // Output
-#define PIN_LCD_LED_CR2 PA_CR2_C23   // Output
-
-/******************ÒÔÏÂÊÇADF7030-1¼Ä´æÆ÷************************************/
+#define PIN_LCD_SCLK_CR2 PD_CR2_C23  // Output
+#define PIN_LCD_RST_CR2 PB_CR2_C21   // Output
+#define PIN_LCD_SDATA_CR2 PD_CR2_C22 // Output
+#define PIN_LCD_A0_RS_CR2 PB_CR2_C20 // Output
+#define PIN_LCD_SEL_CR2 PB_CR2_C22   // Output
+#define PIN_LCD_LED_CR2 PB_CR2_C27   // Output
+/******************ä»¥ä¸‹æ˜¯ADF7030-1å¯„å­˜å™¨************************************/
 /* ADF7030-1 register interface */
+/*
 #define ADF7030_REST PC_ODR_ODR5
 #define ADF7030_REST_DDR PC_DDR_DDR5
 #define ADF7030_REST_CR1 PC_CR1_C15
@@ -109,62 +109,80 @@
 
 #define ADF7030CLK ADF7030_GPIO4
 #define ADF7030DATA ADF7030_GPIO5
+*/
+/******************ä»¥ä¸‹æ˜¯KEYå¯„å­˜å™¨*******è¾“å…¥*****************************/
+#define KEY_SW1 PE_IDR_IDR0
+#define KEY_SW1_DDR PE_DDR_DDR0
+#define KEY_SW1_CR1 PE_CR1_C10
+#define KEY_SW1_CR2 PE_CR2_C20
 
-/******************ÒÔÏÂÊÇKEY¼Ä´æÆ÷*******ÊäÈë*****************************/
-#define KEY_SW2 PA_IDR_IDR4
-#define KEY_SW2_DDR PA_DDR_DDR4
-#define KEY_SW2_CR1 PA_CR1_C14
-#define KEY_SW2_CR2 PA_CR2_C24
+#define KEY_SW2 PE_IDR_IDR1
+#define KEY_SW2_DDR PE_DDR_DDR1
+#define KEY_SW2_CR1 PE_CR1_C11
+#define KEY_SW2_CR2 PE_CR2_C21
 
-#define KEY_SW3 PA_IDR_IDR5
-#define KEY_SW3_DDR PA_DDR_DDR5
-#define KEY_SW3_CR1 PA_CR1_C15
-#define KEY_SW3_CR2 PA_CR2_C25
+#define KEY_SW3 PE_IDR_IDR2
+#define KEY_SW3_DDR PE_DDR_DDR2
+#define KEY_SW3_CR1 PE_CR1_C12
+#define KEY_SW3_CR2 PE_CR2_C22
 
-#define KEY_SW4 PA_IDR_IDR2
-#define KEY_SW4_DDR PA_DDR_DDR2
-#define KEY_SW4_CR1 PA_CR1_C12
-#define KEY_SW4_CR2 PA_CR2_C22
+#define KEY_SW4 PE_IDR_IDR3
+#define KEY_SW4_DDR PE_DDR_DDR3
+#define KEY_SW4_CR1 PE_CR1_C13
+#define KEY_SW4_CR2 PE_CR2_C23
+
+#define KEY_SW5 PE_IDR_IDR4
+#define KEY_SW5_DDR PE_DDR_DDR4
+#define KEY_SW5_CR1 PE_CR1_C14
+#define KEY_SW5_CR2 PE_CR2_C24
+
+#define KEY_SW6 PE_IDR_IDR5
+#define KEY_SW6_DDR PE_DDR_DDR5
+#define KEY_SW6_CR1 PE_CR1_C15
+#define KEY_SW6_CR2 PE_CR2_C25
 
 #define KEY_Empty 0
-#define KEY_SW2_Down 1
-#define KEY_SW3_Down 2
-#define KEY_SW4_Down 3
+#define KEY_SW1_Down 1
+#define KEY_SW2_Down 2
+#define KEY_SW3_Down 3
+#define KEY_SW4_Down 4
+#define KEY_SW5_Down 5
+#define KEY_SW6_Down 6
 
-/********************ÌìÏßÇĞ»» CG2214M6¿ØÖÆÒı½Å¼Ä´æÆ÷*****************************************/
-#define CG2214M6_VC1 PB_ODR_ODR2     //VC1
-#define CG2214M6_VC1_DDR PB_DDR_DDR2 //·½Ïò
-#define CG2214M6_VC1_CR1 PB_CR1_C12  //Ä£Ê½MODE
-#define CG2214M6_VC1_CR2 PB_CR2_C22  //Êä³öÆµÂÊ»òÕßÖĞ¶Ï¿ØÖÆ
+/********************å¤©çº¿åˆ‡æ¢ CG2214M6æ§åˆ¶å¼•è„šå¯„å­˜å™¨*****************************************/
+// #define CG2214M6_VC1 PB_ODR_ODR2     //VC1
+// #define CG2214M6_VC1_DDR PB_DDR_DDR2 //æ–¹å‘
+// #define CG2214M6_VC1_CR1 PB_CR1_C12  //æ¨¡å¼MODE
+// #define CG2214M6_VC1_CR2 PB_CR2_C22  //è¾“å‡ºé¢‘ç‡æˆ–è€…ä¸­æ–­æ§åˆ¶
 
-#define CG2214M6_VC2 PB_ODR_ODR3     //VC2
-#define CG2214M6_VC2_DDR PB_DDR_DDR3 //·½Ïò
-#define CG2214M6_VC2_CR1 PB_CR1_C13  //Ä£Ê½MODE
-#define CG2214M6_VC2_CR2 PB_CR2_C23  //Êä³öÆµÂÊ»òÕßÖĞ¶Ï¿ØÖÆ
+// #define CG2214M6_VC2 PB_ODR_ODR3     //VC2
+// #define CG2214M6_VC2_DDR PB_DDR_DDR3 //æ–¹å‘
+// #define CG2214M6_VC2_CR1 PB_CR1_C13  //æ¨¡å¼MODE
+// #define CG2214M6_VC2_CR2 PB_CR2_C23  //è¾“å‡ºé¢‘ç‡æˆ–è€…ä¸­æ–­æ§åˆ¶
 
-#define CG2214M6_VC1_USE  \
-    {                     \
-        CG2214M6_VC1 = 1; \
-        CG2214M6_VC2 = 0; \
-    }
-#define CG2214M6_VC2_USE  \
-    {                     \
-        CG2214M6_VC2 = 0; \
-        CG2214M6_VC2 = 1; \
-    }
+// #define CG2214M6_VC1_USE  \
+//     {                     \
+//         CG2214M6_VC1 = 1; \
+//         CG2214M6_VC2 = 0; \
+//     }
+// #define CG2214M6_VC2_USE  \
+//     {                     \
+//         CG2214M6_VC2 = 0; \
+//         CG2214M6_VC2 = 1; \
+//     }
 
-#define CG2214M6_USE_T CG2214M6_VC2_USE
-#define CG2214M6_USE_R CG2214M6_VC1_USE
+// #define CG2214M6_USE_T CG2214M6_VC2_USE
+// #define CG2214M6_USE_R CG2214M6_VC1_USE
 
-/********************BEEPÒı½Å¼Ä´æÆ÷*****************************************/
-#define PIN_BEEP PA_ODR_ODR0     // Output   ·äÃùÆ÷
-#define PIN_BEEP_DDR PA_DDR_DDR0 // Output   ·äÃùÆ÷
-#define PIN_BEEP_CR1 PA_CR1_C10  // Output   ·äÃùÆ÷//#define Receiver_OUT_STOP_CR1   PD_CR1_C11  // Output   ÊÜĞÅ»ú¼ÌµçÆ÷stop  ¸ßµçÆ½ÓĞĞ§
+/********************BEEPå¼•è„šå¯„å­˜å™¨*****************************************/
+// #define PIN_BEEP PA_ODR_ODR0     // Output   èœ‚é¸£å™¨
+// #define PIN_BEEP_DDR PA_DDR_DDR0 // Output   èœ‚é¸£å™¨
+// #define PIN_BEEP_CR1 PA_CR1_C10  // Output   èœ‚é¸£å™¨//#define Receiver_OUT_STOP_CR1   PD_CR1_C11  // Output   å—ä¿¡æœºç»§ç”µå™¨stop  é«˜ç”µå¹³æœ‰æ•ˆ
 
-/********************WORK/TESTÇĞ»»Òı½Å¼Ä´æÆ÷*****************************************/
-#define WORK_TEST PB_IDR_IDR0     // Input ÊÜĞÅ»ú²âÊÔ½Å  ¸ßµçÆ½ÓĞĞ§
-#define WORK_TEST_DDR PB_DDR_DDR0 // Input ÊÜĞÅ»ú²âÊÔ½Å  ¸ßµçÆ½ÓĞĞ§
-#define WORK_TEST_CR1 PB_CR1_C10  // Input ÊÜĞÅ»ú²âÊÔ½Å  ¸ßµçÆ½ÓĞĞ§
-#define WORK_TEST_CR2 PB_CR2_C20  // Input ÊÜĞÅ»ú²âÊÔ½Å  ¸ßµçÆ½ÓĞĞ§
+/********************WORK/TESTåˆ‡æ¢å¼•è„šå¯„å­˜å™¨*****************************************/
+// #define WORK_TEST PB_IDR_IDR0     // Input å—ä¿¡æœºæµ‹è¯•è„š  é«˜ç”µå¹³æœ‰æ•ˆ
+// #define WORK_TEST_DDR PB_DDR_DDR0 // Input å—ä¿¡æœºæµ‹è¯•è„š  é«˜ç”µå¹³æœ‰æ•ˆ
+// #define WORK_TEST_CR1 PB_CR1_C10  // Input å—ä¿¡æœºæµ‹è¯•è„š  é«˜ç”µå¹³æœ‰æ•ˆ
+// #define WORK_TEST_CR2 PB_CR2_C20  // Input å—ä¿¡æœºæµ‹è¯•è„š  é«˜ç”µå¹³æœ‰æ•ˆ
 
 #endif

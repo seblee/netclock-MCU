@@ -8,11 +8,13 @@
 /*  DESCRIPTION :                                                      */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
+extern u8 LCDFirstDisplayFlag;
+extern u8 LCDUpdateIDFlag;
 
 void lcd_init(void);
-void send_command(UINT8 data);
-void send_data(UINT8 data);
-void delay(UINT16 i);
+void send_command(u8 data);
+void send_data(u8 data);
+void delay(u16 i);
 void display_map_xy(unsigned char x, unsigned char y, unsigned char l, unsigned char h, const unsigned char *p);
 void display_map_58_6(unsigned char x, unsigned char y, unsigned char len, const unsigned char *p);
 void lcd_clear(unsigned char data1);
@@ -29,5 +31,6 @@ extern const unsigned char char_Small[];
 extern const unsigned char char_Medium[];
 extern const unsigned char char_Contro[];
 extern const unsigned char char_RSSI[];
+extern const unsigned char char_Medium[];
 
 #endif

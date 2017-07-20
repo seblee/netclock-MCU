@@ -7,11 +7,13 @@
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
 
-#include <iostm8l151g4.h> // CPUĞÍºÅ
-#include "Pin_define.h"   // ¹Ü½Å¶¨Òå
-#include "ram.h"          // RAM¶¨Òå
-#include "lcd.h"          // RAM¶¨Òå
-#include "ADF7030_1.h"
+#include <iostm8l151g4.h> // CPUå‹å·
+#include "Pin_define.h"   // ç®¡è„šå®šä¹‰
+#include "lcd.h"          // RAMå®šä¹‰
+//#include "ADF7030_1.h"
+
+u8 LCDFirstDisplayFlag = 0;
+u8 LCDUpdateIDFlag = 1;
 
 /******************************************************************************
  * FunctionName: lcd_init
@@ -46,8 +48,6 @@ void lcd_init(void)
     send_command(0xa0); //Column scanning*/
     send_command(0x40); //The initial line of display settings
     send_command(0xaf); //display ON
-    Display_key_SW3 = 0xff;
-    FlagLCDUpdate.BYTE = 0x00;
     LCDFirstDisplayFlag = 1;
     lcd_clear(1);
     //    lcd_desplay();
@@ -65,9 +65,9 @@ void lcd_init(void)
  * Function Returns: void
  *
 *********************************************************************************/
-void send_command(UINT8 data)
+void send_command(u8 data)
 {
-    UINT8 i;
+    u8 i;
     PIN_LCD_SEL = 0;   //Selected LCD
     PIN_LCD_A0_RS = 0; //command
     for (i = 0; i < 8; i++)
@@ -92,9 +92,9 @@ void send_command(UINT8 data)
  * Function Returns: void
  *
 *********************************************************************************/
-void send_data(UINT8 data)
+void send_data(u8 data)
 {
-    UINT8 i;
+    u8 i;
     PIN_LCD_SEL = 0; //Selected LCD
     PIN_LCD_A0_RS = 1;
     ; //data
@@ -121,17 +121,17 @@ void send_data(UINT8 data)
  * Function Returns: void
  *
 *********************************************************************************/
-void delay(UINT16 i)
+void delay(u16 i)
 {
-    UINT16 j, k;
+    u16 j, k;
     for (j = 0; j < i; j++)
         for (k = 0; k < 110; k++)
             ;
 }
 
 /*************************************************/
-//LCDÏÔÊ¾(L)*(H 8µÄ±¶Êı)£¬´®ĞĞÄ£Ê½
-//ËµÃ÷£ºx,y´ú±í×ø±ê£»LºÍH´ú±íÍ¼Ïñ´óĞ¡
+//LCDæ˜¾ç¤º(L)*(H 8çš„å€æ•°)ï¼Œä¸²è¡Œæ¨¡å¼
+//è¯´æ˜ï¼šx,yä»£è¡¨åæ ‡ï¼›Lå’ŒHä»£è¡¨å›¾åƒå¤§å°
 /*************************************************/
 void display_map_xy(unsigned char x, unsigned char y, unsigned char l, unsigned char h, const unsigned char *p)
 {
@@ -145,9 +145,9 @@ void display_map_xy(unsigned char x, unsigned char y, unsigned char l, unsigned 
     {
         page = 0xb0 + i + y / 8;
         send_command(page);
-        send_command(com1); //ÁĞµØÖ·£¬¸ßµÍ×Ö½ÚÁ½´ÎĞ´Èë£¬´ÓµÚ0 ÁĞ¿ªÊ¼
+        send_command(com1); //åˆ—åœ°å€ï¼Œé«˜ä½å­—èŠ‚ä¸¤æ¬¡å†™å…¥ï¼Œä»ç¬¬0 åˆ—å¼€å§‹
         send_command(com0);
-        for (seg = x; seg < (l + x); seg++) //Ğ´128 ÁĞ
+        for (seg = x; seg < (l + x); seg++) //å†™128 åˆ—
         {
             send_data(*p++);
         }
@@ -171,15 +171,15 @@ void display_map_58_6(unsigned char x, unsigned char y, unsigned char len, const
 
 void lcd_clear(unsigned char data1)
 {
-    //------¨°???¨º????¨¢3¨¬D¨°
+    //------Ã²???Ãª????Ã¡3Ã¬DÃ²
     unsigned char seg;
     unsigned char page;
-    for (page = 0xb0; page < 0xb9; page++) //D¡ä¨°3¦Ì??¡¤128 ¨°3 0xb0----0xb8
+    for (page = 0xb0; page < 0xb9; page++) //Dâ€²Ã²3Î¼??Â·128 Ã²3 0xb0----0xb8
     {
         send_command(page);
-        send_command(0x10); //¨¢D¦Ì??¡¤¡ê???¦Ì¨ª¡Á??¨²¨¢?¡ä?D¡ä¨¨?¡ê?¡ä¨®¦Ì¨²0 ¨¢D?a¨º?
+        send_command(0x10); //Ã¡DÎ¼??Â·ï¿¡???Î¼Ã­Ã—??ÃºÃ¡?â€²?Dâ€²Ã¨?ï¿¡?â€²Ã³Î¼Ãº0 Ã¡D?aÃª?
         send_command(0x00);
-        for (seg = 0; seg < 128; seg++) //D¡ä128 ¨¢D
+        for (seg = 0; seg < 128; seg++) //Dâ€²128 Ã¡D
         {
             if (data1 == 1)
                 send_data(0x00);
@@ -191,15 +191,15 @@ void lcd_clear(unsigned char data1)
 
 void lcd_clear_1and2_line(unsigned char data1)
 {
-    //------¨°???¨º????¨¢3¨¬D¨°
+    //------Ã²???Ãª????Ã¡3Ã¬DÃ²
     unsigned char seg;
     unsigned char page;
-    for (page = 0xb0; page < 0xb2; page++) //D¡ä¨°3¦Ì??¡¤128 ¨°3 0xb0----0xb8
+    for (page = 0xb0; page < 0xb2; page++) //Dâ€²Ã²3Î¼??Â·128 Ã²3 0xb0----0xb8
     {
         send_command(page);
-        send_command(0x10); //¨¢D¦Ì??¡¤¡ê???¦Ì¨ª¡Á??¨²¨¢?¡ä?D¡ä¨¨?¡ê?¡ä¨®¦Ì¨²0 ¨¢D?a¨º?
+        send_command(0x10); //Ã¡DÎ¼??Â·ï¿¡???Î¼Ã­Ã—??ÃºÃ¡?â€²?Dâ€²Ã¨?ï¿¡?â€²Ã³Î¼Ãº0 Ã¡D?aÃª?
         send_command(0x00);
-        for (seg = 0; seg < 128; seg++) //D¡ä128 ¨¢D
+        for (seg = 0; seg < 128; seg++) //Dâ€²128 Ã¡D
         {
             if (data1 == 1)
                 send_data(0x00);
@@ -211,15 +211,15 @@ void lcd_clear_1and2_line(unsigned char data1)
 
 void lcd_clear_3and8_line(unsigned char data1)
 {
-    //------¨°???¨º????¨¢3¨¬D¨°
+    //------Ã²???Ãª????Ã¡3Ã¬DÃ²
     unsigned char seg;
     unsigned char page;
-    for (page = 0xb2; page < 0xb9; page++) //D¡ä¨°3¦Ì??¡¤128 ¨°3 0xb0----0xb8
+    for (page = 0xb2; page < 0xb9; page++) //Dâ€²Ã²3Î¼??Â·128 Ã²3 0xb0----0xb8
     {
         send_command(page);
-        send_command(0x10); //¨¢D¦Ì??¡¤¡ê???¦Ì¨ª¡Á??¨²¨¢?¡ä?D¡ä¨¨?¡ê?¡ä¨®¦Ì¨²0 ¨¢D?a¨º?
+        send_command(0x10); //Ã¡DÎ¼??Â·ï¿¡???Î¼Ã­Ã—??ÃºÃ¡?â€²?Dâ€²Ã¨?ï¿¡?â€²Ã³Î¼Ãº0 Ã¡D?aÃª?
         send_command(0x00);
-        for (seg = 0; seg < 128; seg++) //D¡ä128 ¨¢D
+        for (seg = 0; seg < 128; seg++) //Dâ€²128 Ã¡D
         {
             if (data1 == 1)
                 send_data(0x00);
@@ -239,106 +239,35 @@ void lcd_clear_3and8_line(unsigned char data1)
 **/
 void LCDTestDisplay(void)
 {
-    char TestWords[] = {"TEST MODEFilter GFSKPAx PA 1dBmTESTRXBERCCA"};
-    u8 i = 0, j, k;
-    if (Display_key_SW3 != Count_key_SW3)
-    {
-        Display_key_SW3 = Count_key_SW3;
-        lcd_clear(1);
-        display_map_xy(1, 9, 5, 8, char_Small + ('*' - ' ') * 5);
-        k = i;
-        j = k + 9;
-        for (i = i; i < j; i++) //test mode
-            display_map_xy(27 + 6 * (i - k), 0, 5, 8, char_Small + (TestWords[i] - ' ') * 5);
-        k = i;
-        j = k + 11;
-        for (i = i; i < j; i++) //fsk
-            display_map_xy(10 + 6 * (i - k), 9, 5, 8, char_Small + (TestWords[i] - ' ') * 5);
-        k = i;
-        j = k + 8;
-        for (i = i; i < j; i++) //paX
-            display_map_xy(10 + 6 * (i - k), 18, 5, 8, char_Small + (TestWords[i] - ' ') * 5);
-        k = i;
-        j = k + 3;
-        for (i = i; i < j; i++) //dBm
-            display_map_xy(10 + 6 * (i - k), 27, 5, 8, char_Small + (TestWords[i] - ' ') * 5);
-        display_map_xy(52, 27, 5, 8, char_Small + ('0' - ' ') * 5);
-        k = i;
-        j = k + 4;
-        for (i = i; i < j; i++) //TEST
-            display_map_xy(10 + 6 * (i - k), 36, 5, 8, char_Small + (TestWords[i] - ' ') * 5);
-        display_map_xy(52, 36, 5, 8, char_Small + ('R' - ' ') * 5);
-        k = i;
-        j = k + 5;
-        for (i = i; i < j; i++) //RXBRE
-            display_map_xy(10 + 6 * (i - k), 45, 5, 8, char_Small + (TestWords[i] - ' ') * 5);
-        display_map_xy(52, 45, 5, 8, char_Small + ('0' - ' ') * 5);
-        k = i;
-        j = k + 3;
-        for (i = i; i < j; i++) //RXBRE
-            display_map_xy(10 + 6 * (i - k), 54, 5, 8, char_Small + (TestWords[i] - ' ') * 5);
-        display_map_xy(52, 54, 5, 8, char_Small + ('0' - ' ') * 5);
-    }
+
     if (LCDUpdateIDFlag == 1)
     {
         LCDUpdateIDFlag = 0;
-        switch (DATA_Packet_Contro_buf)
-        {
-        case 0x14:
-            break; //stop+login
-        case 0x40:
-            break; //×Ô¶¯ËÍĞÅ
-        case 0x01:
-            break; //VENT
-        case 0x02:
-            display_map_58_6(70, 63, 5, "CLOSE");
-            break;
-        case 0x04:
-            display_map_58_6(70, 63, 5, "STOP ");
-            break;
-        case 0x08:
-            display_map_58_6(70, 63, 5, "OPEN ");
-            break;
-        case 0x0C:
-            break; //open+stop
-        case 0x06:
-            break; //close+stop
-        case 0x0A:
-            break; //close+OPEN
-        case 0x09:
-            break; //vent+OPEN
-        case 0x03:
-            break; //vent+close
-        default:
-            break;
-        }
     }
 }
 
 /************************************************************/
 void lcd_desplay(void)
 {
-    UINT8 i, data;
-    UINT32 num;
+    u8 i, data;
+    u32 num;
 
-    if (Display_key_SW3 != Count_key_SW3)
+    /*if (Display_key_SW3 != Count_key_SW3)
     {
         Display_key_SW3 = Count_key_SW3;
         lcd_clear(1);
 
         if (Display_key_SW3 == 0)
         {
-            Head_0x5515_or_0x5456 = 0x5515;
             display_map_xy(40 + 0 * 25, 0, 24, 24, char_company + 0 * 72);
             display_map_xy(40 + 1 * 25, 0, 24, 24, char_company + 1 * 72);
         }
         else
         {
-            Head_0x5515_or_0x5456 = 0x5456;
             display_map_xy(40 + 0 * 25, 0, 24, 24, char_company + 2 * 72);
             display_map_xy(40 + 1 * 25, 0, 24, 24, char_company + 3 * 72);
         }
-        //*************************DISPLAY  "ID_CHECKER"
+        //DISPLAY  "ID_CHECKER"
         display_map_xy(4, 32, 12, 24, char_ID_CHECKER);
         display_map_xy(4 + 1 * 12, 32, 12, 24, char_ID_CHECKER + 1 * 36);
         display_map_xy(4 + 3 * 12, 32, 12, 24, char_ID_CHECKER + 3 * 36);
@@ -348,7 +277,7 @@ void lcd_desplay(void)
         display_map_xy(4 + 7 * 12, 32, 12, 24, char_ID_CHECKER + 7 * 36);
         display_map_xy(4 + 8 * 12, 32, 12, 24, char_ID_CHECKER + 8 * 36);
         display_map_xy(4 + 9 * 12, 32, 12, 24, char_ID_CHECKER + 9 * 36);
-    }
+    }       */
     if (LCDUpdateIDFlag == 1)
     {
         LCDUpdateIDFlag = 0;
@@ -357,167 +286,18 @@ void lcd_desplay(void)
             LCDFirstDisplayFlag = 0;
             lcd_clear(1);
         }
-        num = DATA_Packet_ID;
         for (i = 0; i < 8; i++)
         {
             data = num % 10;
             num = num / 10;
-            //display_map_xy(12+(7-i)*13,32,11,24,char_Large_L11_H24+data*33);
             display_map_xy(1 + (7 - i) * 9, 24, 7, 16, char_Medium + data * 14);
-        }
-
-        switch (DATA_Packet_Contro_buf)
-        {
-        case 0x14: //stop+login
-            break;
-        case 0x40: //×Ô¶¯ËÍĞÅ
-            break;
-        case 0x01: //VENT
-            break;
-        case 0x02: //close
-                   //                    display_map_xy(1,48,8,16,char_Contro+8*16);
-                   //                    display_map_xy(1+1*9,48,8,16,char_Contro+9*16);
-                   //                    display_map_xy(1+2*9,48,8,16,char_Contro+10*16);
-                   //                    display_map_xy(1+3*9,48,8,16,char_Contro+11*16);
-                   //                    display_map_xy(1+4*9,48,8,16,char_Contro+12*16);
-
-            display_map_xy(0, 40, 2, 24, char_Contro + 13 * 48);
-            display_map_xy(2, 40, 16, 24, char_Contro + 8 * 48);
-            display_map_xy(2 + 1 * 16, 40, 16, 24, char_Contro + 9 * 48);
-            display_map_xy(2 + 2 * 15, 40, 16, 24, char_Contro + 10 * 48);
-            display_map_xy(2 + 3 * 16, 40, 16, 24, char_Contro + 11 * 48);
-            display_map_xy(2 + 4 * 16, 40, 16, 24, char_Contro + 12 * 48);
-            break;
-        case 0x04: //stop
-                   //                                display_map_xy(1,48,8,16,char_Contro+4*16);
-                   //                                display_map_xy(1+1*9,48,8,16,char_Contro+5*16);
-                   //                                display_map_xy(1+2*9,48,8,16,char_Contro+6*16);
-                   //                                display_map_xy(1+3*9,48,8,16,char_Contro+7*16);
-                   //                                display_map_xy(1+4*9,48,8,16,char_Contro+13*16);  //¿Õ
-
-            display_map_xy(0, 40, 2, 24, char_Contro + 13 * 48);
-            display_map_xy(2, 40, 16, 24, char_Contro + 4 * 48);
-            display_map_xy(2 + 1 * 16, 40, 16, 24, char_Contro + 5 * 48);
-            display_map_xy(2 + 2 * 15, 40, 16, 24, char_Contro + 6 * 48);
-            display_map_xy(2 + 3 * 16, 40, 16, 24, char_Contro + 7 * 48);
-            display_map_xy(2 + 4 * 16, 40, 16, 24, char_Contro + 13 * 48);
-            break;
-        case 0x08: //open
-                   //                                display_map_xy(1,48,8,16,char_Contro+0*16);
-                   //                                display_map_xy(1+1*9,48,8,16,char_Contro+1*16);
-                   //                                display_map_xy(1+2*9,48,8,16,char_Contro+2*16);
-                   //                                display_map_xy(1+3*9,48,8,16,char_Contro+3*16);
-                   //                                display_map_xy(1+4*9,48,8,16,char_Contro+13*16);   //¿Õ
-
-            display_map_xy(0, 40, 16, 24, char_Contro + 0 * 48);
-            display_map_xy(2 + 1 * 16, 40, 16, 24, char_Contro + 1 * 48);
-            display_map_xy(2 + 2 * 16, 40, 16, 24, char_Contro + 2 * 48);
-            display_map_xy(2 + 3 * 16, 40, 16, 24, char_Contro + 3 * 48);
-            display_map_xy(2 + 4 * 16, 40, 16, 24, char_Contro + 13 * 48);
-            break;
-        case 0x0C: //open+stop
-            break;
-        case 0x06: //close+stop
-            break;
-        case 0x0A: //close+OPEN
-            break;
-        case 0x09: //vent+OPEN
-            break;
-        case 0x03: //vent+close
-            break;
-        default:
-            break;
-        }
-    }
-}
-
-//***************************DisplayRSSI********************************************************
-void LCD_display_argos_rssi(unsigned int m)
-{
-    /*  unsigned char i,x;
-  if(m>1300)m=1300;
-  if(lcd_rssi!=m){
-    for(i=4;i>=1;i--){
-      x=m%10;
-      m=m/10;
-      if(i==1){
-        if(x==0){
-          display_map_xy(86,0,5,8,char_Small);
-          display_map_xy(86+i*6,0,5,8,char_Small+0x0d*5);
-        }
-        else {
-          display_map_xy(86,0,5,8,char_Small+0x0d*5);
-          display_map_xy(86+i*6,0,5,8,char_Small+(0x10+x)*5);
-        }
-      }
-      else if(i==4){if(x>=6)m=m+1;}
-      else  display_map_xy(86+i*6,0,5,8,char_Small+(0x10+x)*5);
-    }
-
-    display_map_xy(86+24,0,5,8,char_Small+0x44*5);      //ÏÔÊ¾dBm
-    display_map_xy(86+24+1*6,0,5,8,char_Small+0x22*5);
-    display_map_xy(86+24+2*6,0,5,8,char_Small+0x4d*5);
-    lcd_rssi=m;
-  }*/
-}
-/**
-****************************************************************************
-* @Function : void LCDDisplayRISS(void)
-* @File     : lcd.c
-* @Program  :
-* @Created  : 2017/4/18 by Xiaowine
-* @Brief    : »æÖÆĞÅºÅÇ¿¶È
-* @Version  : V1.0
-**/
-void LCDDisplayRISS(void)
-{
-    if (LCDUpdateRISSFlag != 0)
-    {
-        //      if(Flag_Display_key_SW3==1){Flag_Display_key_SW3=0;lcd_clear(1);}
-        //lcd_clear_1and2_line(1);
-        //LCD_display_argos_rssi((130-RAM_rssi_AVG)*10);
-        LCDRSSI = 130 - RAM_RSSI_AVG;
-        if (LCDRSSI > 110)
-        {
-            display_map_xy(1 + 0 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-            display_map_xy(1 + 1 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-            display_map_xy(1 + 2 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-            display_map_xy(1 + 3 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-        }
-        else if (LCDRSSI > 100)
-        {
-            display_map_xy(1 + 0 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 1 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-            display_map_xy(1 + 2 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-            display_map_xy(1 + 3 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-        }
-        else if (LCDRSSI > 80)
-        {
-            display_map_xy(1 + 0 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 1 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 2 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-            display_map_xy(1 + 3 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-        }
-        else if (LCDRSSI > 60)
-        {
-            display_map_xy(1 + 0 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 1 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 2 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 3 * 20, 0, 16, 16, char_RSSI + 0 * 32);
-        }
-        else
-        {
-            display_map_xy(1 + 0 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 1 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 2 * 20, 0, 16, 16, char_RSSI + 1 * 32);
-            display_map_xy(1 + 3 * 20, 0, 16, 16, char_RSSI + 1 * 32);
         }
     }
 }
 
 const unsigned char char_Large_L11_H24[] = {
-    /*--  ¿í¶Èx¸ß¶È=11x24  --*/
-    // ASCIIÂë(HEX)  ×Ö·û
+    /*--  å®½åº¦xé«˜åº¦=11x24  --*/
+    // ASCIIç (HEX)  å­—ç¬¦
     0xE0, 0xF8, 0xFC, 0x3E, 0x0E, 0x0E, 0x0E, 0xBE, 0xFC, 0xF8, 0xE0, 0xFF, 0xFF, 0xFF, 0xC0, 0xF0, //30       0
     0x7C, 0x1E, 0x07, 0xFF, 0xFF, 0xFF, 0x0F, 0x3F, 0x7F, 0xFB, 0xE0, 0xE0, 0xE0, 0xF8, 0x7F, 0x3F,
     0x0F,
@@ -566,12 +346,12 @@ const unsigned char char_Large_L11_H24[] = {
     0x70, 0x70, 0x70, 0x70, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00,
 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //      ÇåÆÁ
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //      æ¸…å±
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00};
 
 const unsigned char char_ID[] = { //ID CHECKER
-    /*--  ¿í¶Èx¸ß¶È=110x24  --*/
+    /*--  å®½åº¦xé«˜åº¦=110x24  --*/
     0x00, 0x00, 0x20, 0x20, 0x20, 0xE0, 0x20, 0x20, 0x20, 0x00, 0x00, 0x20, 0xE0, 0x20, 0x20, 0x20,
     0x20, 0x60, 0x40, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x80, 0x40, 0x20, 0x20, 0x20, 0x20, 0x60, 0xE0, 0x00, 0x20, 0xE0, 0x20, 0x00,
@@ -595,95 +375,95 @@ const unsigned char char_ID[] = { //ID CHECKER
     0x1F, 0x10, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0C, 0x10, 0x10};
 
 const unsigned char char_ID_CHECKER[] = { //ID CHECKER
-    /*--  ÎÄ×Ö:  I  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  I  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x00, 0x20, 0x20, 0x20, 0xE0, 0xE0, 0xE0, 0xE0, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00,
     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x10, 0x10, 0x1F, 0x1F, 0x1F, 0x1F,
     0x10, 0x10, 0x10, 0x00,
 
-    /*--  ÎÄ×Ö:  D  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  D  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x20, 0xE0, 0xE0, 0xE0, 0x20, 0x20, 0x60, 0xE0, 0xC0, 0xC0, 0x80, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
     0x00, 0x00, 0x00, 0x00, 0x03, 0xFF, 0xFF, 0x00, 0x10, 0x1F, 0x1F, 0x1F, 0x10, 0x10, 0x18, 0x1C,
     0x0F, 0x0F, 0x07, 0x00,
 
-    /*--  ÎÄ×Ö:  :  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  :  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x0E, 0x0E, 0x0E, 0x0E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1C, 0x1C, 0x1C, 0x1C,
     0x00, 0x00, 0x00, 0x00,
 
-    /*--  ÎÄ×Ö:  C  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  C  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x00, 0x80, 0xC0, 0xC0, 0xE0, 0x60, 0x20, 0x20, 0x60, 0xE0, 0xE0, 0x00, 0xFC, 0xFF, 0xFF, 0x03,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x07, 0x0F, 0x1F, 0x18, 0x10, 0x10, 0x10,
     0x18, 0x0E, 0x07, 0x00,
 
-    /*--  ÎÄ×Ö:  H  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  H  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x20, 0xE0, 0xE0, 0xE0, 0x20, 0x00, 0x00, 0x20, 0xE0, 0xE0, 0xE0, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
     0x10, 0x10, 0x10, 0x10, 0xFF, 0xFF, 0xFF, 0x00, 0x10, 0x1F, 0x1F, 0x1F, 0x10, 0x00, 0x00, 0x10,
     0x1F, 0x1F, 0x1F, 0x00,
 
-    /*--  ÎÄ×Ö:  E  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  E  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x20, 0xE0, 0xE0, 0xE0, 0x20, 0x20, 0x20, 0x20, 0x60, 0xE0, 0xE0, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
     0x10, 0x10, 0x10, 0x7C, 0x7C, 0x00, 0x00, 0x00, 0x10, 0x1F, 0x1F, 0x1F, 0x10, 0x10, 0x10, 0x10,
     0x18, 0x1C, 0x1E, 0x00,
 
-    /*--  ÎÄ×Ö:  C  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  C  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x00, 0x80, 0xC0, 0xC0, 0xE0, 0x60, 0x20, 0x20, 0x60, 0xE0, 0xE0, 0x00, 0xFC, 0xFF, 0xFF, 0x03,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x07, 0x0F, 0x1F, 0x18, 0x10, 0x10, 0x10,
     0x18, 0x0E, 0x07, 0x00,
 
-    /*--  ÎÄ×Ö:  K  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  K  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x20, 0xE0, 0xE0, 0xE0, 0x20, 0x20, 0x20, 0xE0, 0xE0, 0x60, 0x20, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
     0x38, 0x7E, 0xFF, 0xE3, 0x81, 0x00, 0x00, 0x00, 0x10, 0x1F, 0x1F, 0x1F, 0x10, 0x10, 0x01, 0x17,
     0x1F, 0x1E, 0x18, 0x00,
 
-    /*--  ÎÄ×Ö:  E  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  E  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x20, 0xE0, 0xE0, 0xE0, 0x20, 0x20, 0x20, 0x20, 0x60, 0xE0, 0xE0, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
     0x10, 0x10, 0x10, 0x7C, 0x7C, 0x00, 0x00, 0x00, 0x10, 0x1F, 0x1F, 0x1F, 0x10, 0x10, 0x10, 0x10,
     0x18, 0x1C, 0x1E, 0x00,
 
-    /*--  ÎÄ×Ö:  R  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=12x24   --*/
+    /*--  æ–‡å­—:  R  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=12x24   --*/
     0x20, 0xE0, 0xE0, 0xE0, 0x20, 0x20, 0x20, 0x60, 0xE0, 0xE0, 0xC0, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
     0x10, 0x30, 0xF0, 0xF8, 0xDF, 0x0F, 0x07, 0x00, 0x10, 0x1F, 0x1F, 0x1F, 0x10, 0x10, 0x00, 0x07,
     0x1F, 0x1F, 0x18, 0x10
 
 };
 
-const unsigned char char_company[] = { //¹«Ë¾
-    /*--  ÎÄ×Ö:  ÎÄ  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=24x24   --*/
+const unsigned char char_company[] = { //å…¬å¸
+    /*--  æ–‡å­—:  æ–‡  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=24x24   --*/
     0x00, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0xC0, 0xC0, 0x40, 0x4C, 0x7C, 0x78, 0x50, 0x40, 0xC0,
     0xC0, 0xC0, 0x40, 0x60, 0x60, 0xE0, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07,
     0x3F, 0xFC, 0xF0, 0xC0, 0xC0, 0xF8, 0xFF, 0x3F, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x40, 0x40, 0x40, 0x60, 0x60, 0x30, 0x10, 0x18, 0x0C, 0x0F, 0x07, 0x07, 0x0F, 0x1C, 0x18,
     0x38, 0x30, 0x30, 0x70, 0x60, 0x20, 0x20, 0x00,
 
-    /*--  ÎÄ×Ö:  »¯  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=24x24   --*/
+    /*--  æ–‡å­—:  åŒ–  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=24x24   --*/
     0x00, 0x00, 0x00, 0x00, 0xC0, 0xF0, 0xFC, 0x3C, 0x0C, 0x0C, 0x00, 0x00, 0xFC, 0xFC, 0xFC, 0x04,
     0x00, 0x80, 0xC0, 0xC0, 0xC0, 0x80, 0x00, 0x00, 0x40, 0x70, 0x38, 0x1E, 0xFF, 0xFF, 0xFF, 0x03,
     0x00, 0x80, 0xC0, 0xC0, 0xFF, 0xFF, 0xFF, 0x1C, 0x0E, 0x07, 0x03, 0x01, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x7F, 0x7F, 0x7F, 0x02, 0x03, 0x01, 0x01, 0x00, 0x1F, 0x3F, 0x3F, 0x20,
     0x20, 0x20, 0x20, 0x20, 0x3F, 0x3F, 0x38, 0x00,
 
-    /*--  ÎÄ×Ö:  ĞÂ  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=24x24   --*/
+    /*--  æ–‡å­—:  æ–°  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=24x24   --*/
     0x00, 0x20, 0x20, 0x60, 0xE0, 0xE4, 0xBC, 0x3C, 0xF8, 0xE0, 0xF0, 0x70, 0x30, 0xF8, 0xF8, 0xF0,
     0x10, 0x18, 0x18, 0x0C, 0x0C, 0x1C, 0x18, 0x00, 0x00, 0x44, 0x44, 0xC4, 0xC5, 0x47, 0xFF, 0xFE,
     0xFF, 0x45, 0x64, 0x26, 0x66, 0xFF, 0xFF, 0xFF, 0x04, 0x04, 0xFC, 0xFC, 0x06, 0x06, 0x06, 0x00,
     0x20, 0x30, 0x3C, 0x2F, 0x27, 0x23, 0x7F, 0x7F, 0x3F, 0x43, 0x6F, 0x7E, 0x3C, 0x1F, 0x07, 0x01,
     0x00, 0x00, 0x7F, 0x7F, 0x00, 0x00, 0x00, 0x00,
 
-    /*--  ÎÄ×Ö:  Éú  --*/
-    /*--  ËÎÌå18;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=24x24   --*/
+    /*--  æ–‡å­—:  ç”Ÿ  --*/
+    /*--  å®‹ä½“18;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=24x24   --*/
     0x00, 0x00, 0x00, 0x00, 0xE0, 0xF8, 0xF8, 0x38, 0x10, 0x00, 0x00, 0xFE, 0xFC, 0xFC, 0x00, 0x00,
     0x00, 0x80, 0xC0, 0xC0, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x30, 0x38, 0x1F, 0x47, 0x43, 0x41, 0x41,
     0x41, 0x41, 0x41, 0xFF, 0xFF, 0xFF, 0x41, 0x41, 0x41, 0x61, 0x61, 0x60, 0x41, 0x01, 0x00, 0x00,
@@ -693,19 +473,19 @@ const unsigned char char_company[] = { //¹«Ë¾
 };
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&//
-//ÒÔÏÂÊÇ×Ö¿â
+//ä»¥ä¸‹æ˜¯å­—åº“
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&//
 const unsigned char char_Small[] = {
-    /*--  ¿í¶Èx¸ß¶È=5x8  --*/
-    // ASCIIÂë(HEX)  ×Ö·û
-    0x00, 0x00, 0x00, 0x00, 0x00, //20      ¿Õ°×
-    0x00, 0x00, 0xBE, 0x00, 0x00, //21       £¡
-    0x00, 0x00, 0x00, 0x00, 0x00, //22       ¡°       ¿Õ
-    0x00, 0x00, 0x00, 0x00, 0x00, //23       #        ¿Õ
-    0x2A, 0x2C, 0xF8, 0x2C, 0x2A, //24      £¤
-    0x00, 0x00, 0x00, 0x00, 0x00, //25       %        ¿Õ
-    0x00, 0x00, 0x00, 0x00, 0x00, //26       &        ¿Õ
-    0x00, 0xB0, 0x70, 0x00, 0x00, //27       £¬
+    /*--  å®½åº¦xé«˜åº¦=5x8  --*/
+    // ASCIIç (HEX)  å­—ç¬¦
+    0x00, 0x00, 0x00, 0x00, 0x00, //20      ç©ºç™½
+    0x00, 0x00, 0xBE, 0x00, 0x00, //21       ï¼
+    0x00, 0x00, 0x00, 0x00, 0x00, //22       â€œ       ç©º
+    0x00, 0x00, 0x00, 0x00, 0x00, //23       #        ç©º
+    0x2A, 0x2C, 0xF8, 0x2C, 0x2A, //24      ï¿¥
+    0x00, 0x00, 0x00, 0x00, 0x00, //25       %        ç©º
+    0x00, 0x00, 0x00, 0x00, 0x00, //26       &        ç©º
+    0x00, 0xB0, 0x70, 0x00, 0x00, //27       ï¼Œ
     0x00, 0x38, 0x44, 0x82, 0x00, //28       (
     0x00, 0x82, 0x44, 0x38, 0x00, //29       )
     0x28, 0x10, 0x7C, 0x10, 0x28, //2A       *
@@ -731,7 +511,7 @@ const unsigned char char_Small[] = {
     0x10, 0x28, 0x44, 0x82, 0x00, //3C        <
     0x28, 0x28, 0x28, 0x28, 0x28, //3D        =
     0x00, 0x82, 0x44, 0x28, 0x10, //3E        >
-    0x00, 0x00, 0x00, 0x00, 0x00, //3F        ?        ¿Õ
+    0x00, 0x00, 0x00, 0x00, 0x00, //3F        ?        ç©º
     0x64, 0x92, 0xF2, 0x82, 0x7C, //40        @
 
     0xF8, 0x24, 0x22, 0x24, 0xF8, //41        A
@@ -762,11 +542,11 @@ const unsigned char char_Small[] = {
     0xC2, 0xA2, 0x92, 0x8A, 0x86, //5A        Z
 
     0x00, 0xFE, 0x82, 0x82, 0x00, //5B        [
-    0x04, 0x08, 0x10, 0x20, 0x40, //5C      ·ûºÅ·´Ğ±¸Ü
+    0x04, 0x08, 0x10, 0x20, 0x40, //5C      ç¬¦å·åæ–œæ 
     0x00, 0x82, 0x82, 0xFE, 0x00, //5D        ]
     0x08, 0x04, 0x02, 0x04, 0x08, //5E        ^
     0x80, 0x80, 0x80, 0x80, 0x80, //5F        _
-    0x00, 0x00, 0x00, 0x00, 0x00, //60        '        ¿Õ
+    0x00, 0x00, 0x00, 0x00, 0x00, //60        '        ç©º
 
     0x40, 0xA8, 0xA8, 0xA8, 0xF0, //61       a
     0xFE, 0x90, 0x88, 0x88, 0x70, //62       b
@@ -794,7 +574,7 @@ const unsigned char char_Small[] = {
     0x88, 0x50, 0x20, 0x50, 0x88, //78       x
     0x18, 0xA0, 0xA0, 0xA0, 0x78, //79       y
     0x88, 0xC8, 0xA8, 0x98, 0x88, //7A       z
-    0xFE, 0x7C, 0x38, 0x10, 0x00, //7B       Èı¹ú
+    0xFE, 0x7C, 0x38, 0x10, 0x00, //7B       ä¸‰å›½
 
     0xF8, 0x24, 0x22, 0x24, 0xF8, //7c        A
     0xFE, 0x92, 0x92, 0x92, 0x6C, //7d        B
@@ -805,9 +585,42 @@ const unsigned char char_Small[] = {
     0x28, 0x10, 0x7C, 0x10, 0x28  //82        *
 };
 
+const unsigned char char_HZ_Time[] = {
+    /*--  æ–‡å­—:  å¹´  --*/
+    /*--  æ¥·ä½“_GB231212;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=16x16   --*/
+    0x10, 0x00, 0x10, 0x00, 0x1F, 0xFC, 0x20, 0x80, 0x20, 0x80, 0x40, 0x80, 0x1F, 0xF8, 0x10, 0x80,
+    0x10, 0x80, 0x10, 0x80, 0xFF, 0xFE, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80,
+
+    /*--  æ–‡å­—:  æœˆ  --*/
+    /*--  æ¥·ä½“_GB231212;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=16x16   --*/
+    0x00, 0x00, 0x1F, 0xF8, 0x10, 0x08, 0x10, 0x08, 0x10, 0x08, 0x1F, 0xF8, 0x10, 0x08, 0x10, 0x08,
+    0x10, 0x08, 0x1F, 0xF8, 0x10, 0x08, 0x10, 0x08, 0x20, 0x08, 0x20, 0x08, 0x40, 0x28, 0x80, 0x10,
+
+    /*--  æ–‡å­—:  æ—¥  --*/
+    /*--  æ¥·ä½“_GB231212;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=16x16   --*/
+    0x00, 0x00, 0x1F, 0xF0, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x1F, 0xF0,
+    0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x1F, 0xF0, 0x10, 0x10,
+
+    /*--  æ–‡å­—:  æ—¶  --*/
+    /*--  æ¥·ä½“_GB231212;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=16x16   --*/
+    0x00, 0x08, 0x00, 0x08, 0x7C, 0x08, 0x44, 0x08, 0x45, 0xFE, 0x44, 0x08, 0x44, 0x08, 0x7C, 0x08,
+    0x44, 0x88, 0x44, 0x48, 0x44, 0x48, 0x44, 0x08, 0x7C, 0x08, 0x44, 0x08, 0x00, 0x28, 0x00, 0x10,
+
+    /*--  æ–‡å­—:  åˆ†  --*/
+    /*--  æ¥·ä½“_GB231212;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=16x16   --*/
+    0x00, 0x40, 0x04, 0x40, 0x04, 0x20, 0x08, 0x20, 0x10, 0x10, 0x20, 0x08, 0x40, 0x04, 0x9F, 0xE2,
+    0x04, 0x20, 0x04, 0x20, 0x04, 0x20, 0x08, 0x20, 0x08, 0x20, 0x10, 0x20, 0x21, 0x40, 0x40, 0x80,
+
+    /*--  æ–‡å­—:  ç§’  --*/
+    /*--  æ¥·ä½“_GB231212;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=16x16   --*/
+    0x08, 0x20, 0x1C, 0x20, 0xF0, 0x20, 0x10, 0xA8, 0x10, 0xA4, 0xFC, 0xA2, 0x11, 0x22, 0x31, 0x20,
+    0x3A, 0x24, 0x54, 0x24, 0x54, 0x28, 0x90, 0x08, 0x10, 0x10, 0x10, 0x20, 0x10, 0xC0, 0x13, 0x00,
+
+};
+
 const unsigned char char_Medium[] = {
-    /*--  ¿í¶Èx¸ß¶È=7x16  --*/
-    // ASCIIÂë(HEX)  ×Ö·û
+    /*--  å®½åº¦xé«˜åº¦=7x16  --*/
+    // ASCIIç (HEX)  å­—ç¬¦
     0xF8, 0xFC, 0x06, 0x86, 0xC6, 0xFC, 0xF8, 0x3F, 0x7F, 0xC7, 0xC3, 0xC1, 0x7F, 0x3F, //30         0
     0x00, 0x18, 0x1C, 0xFE, 0xFE, 0x00, 0x00, 0x00, 0xC0, 0xC0, 0xFF, 0xFF, 0xC0, 0xC0, //31         1
     0x1C, 0x1E, 0x0E, 0x06, 0x86, 0xFE, 0xFC, 0xF8, 0xFC, 0xCE, 0xC7, 0xC3, 0xC1, 0xC0, //32         2
@@ -826,64 +639,64 @@ const unsigned char char_Medium[] = {
     0xFE, 0xFE, 0x86, 0x86, 0x86, 0x86, 0x06, 0xFF, 0xFF, 0x01, 0x01, 0x01, 0x01, 0x00, //3F         F
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE0, 0xE0, 0xE0, 0x00, 0x00, //40         .
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x03, 0x03, 0x03, 0x03, 0x00, //41         -
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //42          ÇåÆÁ
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //42          æ¸…å±
     0x0C, 0x18, 0x70, 0xFE, 0xFE, 0x70, 0x1C, 0xC3, 0x63, 0x1B, 0xFF, 0xFF, 0x3B, 0x63  //43        *
 };
 
 const unsigned char char_Contro[] = {
-    ///*--  ÎÄ×Ö:  O  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  O  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0xE0,0x10,0x08,0x08,0x08,0x10,0xE0,0x00,0x0F,0x10,0x20,0x20,0x20,0x10,0x0F,0x00,
     //
-    ///*--  ÎÄ×Ö:  P  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  P  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x08,0xF8,0x08,0x08,0x08,0x08,0xF0,0x00,0x20,0x3F,0x21,0x01,0x01,0x01,0x00,0x00,
     //
-    ///*--  ÎÄ×Ö:  E  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  E  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x08,0xF8,0x88,0x88,0xE8,0x08,0x10,0x00,0x20,0x3F,0x20,0x20,0x23,0x20,0x18,0x00,
     //
-    ///*--  ÎÄ×Ö:  N  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  N  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x08,0xF8,0x30,0xC0,0x00,0x08,0xF8,0x08,0x20,0x3F,0x20,0x00,0x07,0x18,0x3F,0x00,
     //
-    ///*--  ÎÄ×Ö:  S  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  S  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x00,0x70,0x88,0x08,0x08,0x08,0x38,0x00,0x00,0x38,0x20,0x21,0x21,0x22,0x1C,0x00,
     //
-    ///*--  ÎÄ×Ö:  T  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  T  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x18,0x08,0x08,0xF8,0x08,0x08,0x18,0x00,0x00,0x00,0x20,0x3F,0x20,0x00,0x00,0x00,
     //
-    ///*--  ÎÄ×Ö:  O  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  O  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0xE0,0x10,0x08,0x08,0x08,0x10,0xE0,0x00,0x0F,0x10,0x20,0x20,0x20,0x10,0x0F,0x00,
     //
-    ///*--  ÎÄ×Ö:  P  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  P  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x08,0xF8,0x08,0x08,0x08,0x08,0xF0,0x00,0x20,0x3F,0x21,0x01,0x01,0x01,0x00,0x00,
     //
-    ///*--  ÎÄ×Ö:  C  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  C  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0xC0,0x30,0x08,0x08,0x08,0x08,0x38,0x00,0x07,0x18,0x20,0x20,0x20,0x10,0x08,0x00,
     //
-    ///*--  ÎÄ×Ö:  L  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  L  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x08,0xF8,0x08,0x00,0x00,0x00,0x00,0x00,0x20,0x3F,0x20,0x20,0x20,0x20,0x30,0x00,
     //
-    ///*--  ÎÄ×Ö:  O  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  O  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0xE0,0x10,0x08,0x08,0x08,0x10,0xE0,0x00,0x0F,0x10,0x20,0x20,0x20,0x10,0x0F,0x00,
     //
-    ///*--  ÎÄ×Ö:  S  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  S  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x00,0x70,0x88,0x08,0x08,0x08,0x38,0x00,0x00,0x38,0x20,0x21,0x21,0x22,0x1C,0x00,
     //
-    ///*--  ÎÄ×Ö:  E  --*/
-    ///*--  ËÎÌå12;  ´Ë×ÖÌåÏÂ¶ÔÓ¦µÄµãÕóÎª£º¿íx¸ß=8x16   --*/
+    ///*--  æ–‡å­—:  E  --*/
+    ///*--  å®‹ä½“12;  æ­¤å­—ä½“ä¸‹å¯¹åº”çš„ç‚¹é˜µä¸ºï¼šå®½xé«˜=8x16   --*/
     //0x08,0xF8,0x88,0x88,0xE8,0x08,0x10,0x00,0x20,0x3F,0x20,0x20,0x23,0x20,0x18,0x00,
     //
-    ///*--  ÎÄ×Ö:  ¿Õ  --*/
+    ///*--  æ–‡å­—:  ç©º  --*/
     //0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 
     //// O(0) P(1) E(2)
@@ -917,7 +730,7 @@ const unsigned char char_Contro[] = {
     //0x60,0xF0,0x90,0x90,0x90,0x10,0x00,0x00,0x08,0x08,0x08,0x09,0x09,0x0F,0x07,0x00,/*"S",11*/
     //
     //0xF0,0xF0,0x90,0x90,0x90,0x10,0x00,0x00,0x0F,0x0F,0x08,0x08,0x08,0x08,0x00,0x00,/*"E",12*/
-    ///*--  ÎÄ×Ö:  ¿Õ  --*/
+    ///*--  æ–‡å­—:  ç©º  --*/
     //0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 
     // O(0) P(1) E(2)
@@ -978,17 +791,17 @@ const unsigned char char_Contro[] = {
     0x00, 0xFF, 0xFF, 0xFF, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x07, 0x07, 0x07, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x00, 0x00, 0x00, 0x00, /*"E",12*/
 
-    /*--  ÎÄ×Ö:  ¿Õ  --*/
+    /*--  æ–‡å­—:  ç©º  --*/
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 const unsigned char char_RSSI[] = {
-    /*--  µ÷ÈëÁËÒ»·ùÍ¼Ïñ£ºD:\My Documents\¹¤×÷×ÊÁÏ\ÈÕ±¾ÎÄ»¯\ÎÄ»¯¸ÄĞÍ\TCXO°æ LCDÍ¼ÏñÊı¾İ\NULL.bmp  --*/
-    /*--  ¿í¶Èx¸ß¶È=16x16  --*/
+    /*--  è°ƒå…¥äº†ä¸€å¹…å›¾åƒï¼šD:\My Documents\å·¥ä½œèµ„æ–™\æ—¥æœ¬æ–‡åŒ–\æ–‡åŒ–æ”¹å‹\TCXOç‰ˆ LCDå›¾åƒæ•°æ®\NULL.bmp  --*/
+    /*--  å®½åº¦xé«˜åº¦=16x16  --*/
     0xE0, 0xF8, 0x1C, 0x0E, 0x06, 0x03, 0x03, 0x01, 0x01, 0x03, 0x03, 0x06, 0x0E, 0x1C, 0xF8, 0xE0,
     0x07, 0x1F, 0x38, 0x70, 0x60, 0xC0, 0xC0, 0x80, 0x80, 0xC0, 0xC0, 0x60, 0x70, 0x38, 0x1F, 0x07,
-    /*--  µ÷ÈëÁËÒ»·ùÍ¼Ïñ£ºD:\My Documents\¹¤×÷×ÊÁÏ\ÈÕ±¾ÎÄ»¯\ÎÄ»¯¸ÄĞÍ\TCXO°æ LCDÍ¼ÏñÊı¾İ\o.bmp  --*/
-    /*--  ¿í¶Èx¸ß¶È=16x16  --*/
+    /*--  è°ƒå…¥äº†ä¸€å¹…å›¾åƒï¼šD:\My Documents\å·¥ä½œèµ„æ–™\æ—¥æœ¬æ–‡åŒ–\æ–‡åŒ–æ”¹å‹\TCXOç‰ˆ LCDå›¾åƒæ•°æ®\o.bmp  --*/
+    /*--  å®½åº¦xé«˜åº¦=16x16  --*/
     0xE0, 0xF8, 0xFC, 0xFE, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0xFE, 0xFC, 0xF8, 0xE0,
     0x07, 0x1F, 0x3F, 0x7F, 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F, 0x7F, 0x3F, 0x1F, 0x07};

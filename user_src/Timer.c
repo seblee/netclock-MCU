@@ -8,9 +8,6 @@
 /***********************************************************************/
 #include <iostm8l151g4.h> // CPU型号
 #include "Pin_define.h"   // 管脚定义
-//#include "initial.h"		// 初始化  预定义
-#include "ram.h" // RAM定义
-
 u16 LedREDTimer = 1;
 u16 LedYELLOWTimer = 1;
 u16 ErrStateTimeer = 1;
@@ -30,13 +27,6 @@ void TIM4_Init(void)
 void TIM4_UPD_OVF(void)
 { //725==1秒
 
-    if ((LedREDTimer > 1) && ((RedStutue & 0x0f) != LEDONFLAG))
-        LedREDTimer--;
-    if ((LedYELLOWTimer > 1) && ((YellowStutue & 0x0f) != LEDONFLAG))
-        LedYELLOWTimer--;
-    if (ErrStateTimeer > 1)
-        ErrStateTimeer--;
-    if (StateReadTimer > 0)
-        StateReadTimer--;
+
     TIM4_SR1_bit.UIF = 0; // 清除中断标记
 }

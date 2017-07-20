@@ -2030,15 +2030,6 @@
   <group>
     <name>user</name>
     <file>
-      <name>$PROJ_DIR$\user_src\ADF7030_1.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\user_src\eeprom.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\user_src\ID_Decode.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\user_src\Initial.c</name>
     </file>
     <file>
@@ -2046,12 +2037,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\user_src\main.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\user_src\ram.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\user_src\spi.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\user_src\stm8l15x_it.c</name>
