@@ -124,8 +124,8 @@ void beep_init(void)
 {
     //BEEP_CSR=0x4E;
     BEEP_CSR2 = 0;
-    BEEP_CSR2_BEEPDIV = 3;
-    BEEP_CSR2_BEEPSEL = 1;
+    BEEP_CSR2_BEEPDIV = 4;
+    BEEP_CSR2_BEEPSEL = 2;
     CLK_CBEEPR_CLKBEEPSEL0 = 1;
     CLK_CBEEPR_CLKBEEPSEL1 = 0;
 }

@@ -17,7 +17,7 @@
 #define RXD1_enable (USART1_CR2 = 0x24) // 允许接收及其中断
 //********************************************
 void UART1_INIT(void)
-{					//
+{
 	USART1_CR1 = 0; // 1个起始位,8个数据位
 	USART1_CR3 = 0; // 1个停止位
 	USART1_CR4 = 0;
@@ -133,7 +133,7 @@ void PC_PRG(void) // 串口命令
 		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		//%                 写操作               %
 		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		case 'W': 	
+		case 'W':
 			//==================================== ADF7012
 			if (SIO_DATA[2]=='I')				// (WIxd0d1d2d3)
 			{
@@ -142,7 +142,7 @@ void PC_PRG(void) // 串口命令
 				d1 = asc_hex_2(SIO_buff[6],SIO_buff[7]);
 				d2 = asc_hex_2(SIO_buff[8],SIO_buff[9]);
 				d3 = asc_hex_2(SIO_buff[10],SIO_buff[11]);
-				
+
 	                        //write Rx
                                 ROM_adf7012_value[i].byte[0] = d0;
 				ROM_adf7012_value[i].byte[1] = d1;
@@ -150,7 +150,7 @@ void PC_PRG(void) // 串口命令
 				ROM_adf7012_value[i].byte[3] = d3;
                                 dd_write_7021_reg(&ROM_adf7012_value[i].byte[0]);
                                 Delayus(122);		//delay 40us
-									
+
 				//-------------------------------- 保存
 				if(i==1){
 				     j=0x380+i*4;
@@ -160,22 +160,22 @@ void PC_PRG(void) // 串口命令
 				     WriteByteToFLASH(addr_eeprom_sys+j+2,d2);
 				     WriteByteToFLASH(addr_eeprom_sys+j+3,d3);
 				     LockFlash( UNLOCK_EEPROM_TYPE );
-				
+
 				     ClearWDT(); // Service the WDT
 				}
 				//-------------------------------返回  (WHx)
 				d1 = '(';
 				d2 = 'W';
 				Send_char(d1);
-				Send_char(d2);		
+				Send_char(d2);
 				d1 = 'I';
 				d2 = ')';
 				Send_char(d1);
-				Send_char(d2);		
+				Send_char(d2);
 				Send_char(SIO_buff[3]);
-				
-			}	
-			
+
+			}
+
 			//==================================== ADF7012 TX/RX调试
 			if (SIO_DATA[2]=='J')				// (WJx)
 			{
@@ -184,19 +184,19 @@ void PC_PRG(void) // 串口命令
 				d1 = '(';
 				d2 = 'W';
 				Send_char(d1);
-				Send_char(d2);		
+				Send_char(d2);
 				d1 = 'J';
 				d2 = ')';
 				Send_char(d1);
-				Send_char(d2);		
+				Send_char(d2);
 				Send_char(SIO_buff[3]);
-				
-			}				
+
+			}
 		        break;
 		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		//%                 读操作               %
 		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		case 'R':   	
+		case 'R':
 			//==================================== ADF7012   //(RIx)
 			if (SIO_DATA[2]=='I')				// (RI)d0d1d2d3
 			{
@@ -204,19 +204,19 @@ void PC_PRG(void) // 串口命令
 			  	d1 = '(';
 				d2 = 'R';
 				Send_char(d1);
-				Send_char(d2);		
+				Send_char(d2);
 				d1 = 'I';
 				d2 = ')';
 				Send_char(d1);
-				Send_char(d2);	
+				Send_char(d2);
 				for (j=0;j<4;j++){
 			  	   d1 = hex_asc(ROM_adf7012_value[i].byte[j] / 16);
 				   d2 = hex_asc(ROM_adf7012_value[i].byte[j] % 16);
 				   Send_char(d1);
-				   Send_char(d2);					
+				   Send_char(d2);
 				}
-                        }			
-		        break;	
+                        }
+		        break;
 		default:
 			break;
 

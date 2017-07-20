@@ -70,9 +70,10 @@ void main(void)
     lcd_init();
     ClearWDT(); // Service the WDT
     ADF7030Init();
-    //beep_init();
+    beep_init();
     srand((unsigned)time(NULL));
     TX_DataLoad(10010101, OpenMode, &CONST_TXPACKET_DATA_20000AF0[0]);
+    BEEP_and_LED();
     while (WORK_TEST == 0) //≤‚ ‘ƒ£ Ω
     {
         ClearWDT(); // Service the WDT
