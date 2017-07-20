@@ -91,7 +91,7 @@ void SysClock_Init(void)
     //    //CLK_LSICmd(ENABLE);   //使能LSI时钟给看门狗用
     //    //while(CLK_GetFlagStatus(CLK_FLAG_LSIRDY)==RESET);//等待直到LSI稳定
 
-    CLK_ICKCR_HSION = 1; // 使能内部RC OSC（16.00MHz）
+    CLK_ICKCR_HSION = 1; // 使能内部RC OSC（HSI 16.00MHz）
     while ((CLK_ICKCR & 0x02) == 0)
         ;              // 检查内部晶振
     CLK_SWR = 0x01;    // 指定HSI为主时钟

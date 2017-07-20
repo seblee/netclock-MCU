@@ -28,6 +28,8 @@
 #include "lcd.h"          // lcd
 #include "stdlib.h"
 #include "time.h"
+#include "elandtime.h"
+#include "rtc.h"
 /** @addtogroup STM8L15x_StdPeriph_Template
   * @{
   */
@@ -49,6 +51,8 @@
 UINT16 rand_data = 0;
 u8 FLAG_SW10 = 0;
 u16 KEY_COUNT = 0;
+
+
 void main(void)
 {
     u8 Key_Value;
@@ -63,7 +67,10 @@ void main(void)
     lcd_init();
     ClearWDT(); // Service the WDT
     beep_init();
+    InitTimeBuff();
     srand((unsigned)time(NULL));
+    RTC_Config();
+    RTC_Time_Set(ElandTimeNow);
     while (1)
     {
         ClearWDT(); // Service the WDT
@@ -76,11 +83,17 @@ void main(void)
             {
             case KEY_Empty:
                 break;
+            case KEY_SW1_Down:
+                break;
             case KEY_SW2_Down:
                 break;
             case KEY_SW3_Down:
                 break;
             case KEY_SW4_Down:
+                break;
+            case KEY_SW5_Down:
+                break;
+            case KEY_SW6_Down:
                 break;
             default:
                 break;

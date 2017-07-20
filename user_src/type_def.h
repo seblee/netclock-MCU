@@ -13,16 +13,16 @@
 #ifndef __type_def_h__
 #define __type_def_h__
 
-/*Ö÷¿ØĞ¾Æ¬µÄÍ·ÎÄ¼ş*/
+/*ä¸»æ§èŠ¯ç‰‡çš„å¤´æ–‡ä»¶*/
 //
 
-/*bool ÀàĞÍÍ·ÎÄ¼ş*/
+/*bool ç±»å‹å¤´æ–‡ä»¶*/
 #include "stdbool.h"
 
-/*×ÜÖĞ¶ÏÍ·ÎÄ¼ş*/
+/*æ€»ä¸­æ–­å¤´æ–‡ä»¶*/
 #include "intrinsics.h"
 
-/*³£ÓÃÊı¾İÀàĞÍ¶¨Òå*/
+/*å¸¸ç”¨æ•°æ®ç±»å‹å®šä¹‰*/
 typedef unsigned char u8_t;
 typedef unsigned short u16_t;
 typedef unsigned long u32_t;
@@ -34,48 +34,51 @@ typedef unsigned long u32_t;
 #define SUCESS 1
 #define FAILURE 0
 
-//´úÂë±êÖ¾Î»
+//ä»£ç æ ‡å¿—ä½
 typedef union _fullflag_ {
-  unsigned char BYTE;
-  struct
-  {
-    unsigned char Bit0 : 1;
-    unsigned char Bit1 : 1;
-    unsigned char Bit2 : 1;
-    unsigned char Bit3 : 1;
-    unsigned char Bit4 : 1;
-    unsigned char Bit5 : 1;
-    unsigned char Bit6 : 1;
-    unsigned char Bit7 : 1;
-  } BIT;
+    unsigned char BYTE;
+    struct
+    {
+        unsigned char Bit0 : 1;
+        unsigned char Bit1 : 1;
+        unsigned char Bit2 : 1;
+        unsigned char Bit3 : 1;
+        unsigned char Bit4 : 1;
+        unsigned char Bit5 : 1;
+        unsigned char Bit6 : 1;
+        unsigned char Bit7 : 1;
+    } BIT;
 } uFLAG, *P_uFLAG;
 #define TRANSITION_STATUS_TRANSITION 0
 #define TRANSITION_STATUS_EXECUTING 1
 #define TRANSITION_STATUS_IDLE 2
 typedef struct
 {
-  union {
-    u8 VALUE; /*!< SPI Slave Status                                                      */
+    char year[4];       /**< Year         */
+    char dash1;         /**< Dash1        */
+    char month[2];      /**< Month        */
+    char dash2;         /**< Dash2        */
+    char day[2];        /**< Day          */
+    char T;             /**< T            */
+    char hour[2];       /**< Hour         */
+    char colon1;        /**< Colon1       */
+    char minute[2];     /**< Minute       */
+    char colon2;        /**< Colon2       */
+    char second[2];     /**< Second       */
+    char decimal;       /**< Decimal      */
+    char sub_second[6]; /**< Sub-second   */
+    char Z;             /**< UTC timezone */
+} iso8601_time_t;
 
-    struct
-    {
-      u8 MEM_ACC_STATUS : 1; /*!< *Instantaneous* value of an AHB read data underflow condition
-                                                    for memory reads. The same bit doubles up as an AHB bus error
-                                                     indicator for memory writes.                                         */
-      u8 FW_STATUS : 4;      /*!< *Instantaneous* value of the firmware status of the radio controller
-                                                    state machine.                                                        */
-      u8 CMD_READY : 1;      /*!< *Instantaneous* value of the indicator to the host that no posted
-                                                    (to the SPI Slave) radio controller command is currently awaiting
-                                                     servicing by the firmware radio state machine running on the
-                                                     Cortex-M0.                                                           */
-      u8 EXT_IRQ_STATUS : 1; /*!< *Instantaneous* value of the commoned-up (bitwise OR of the)
-                                                    external interrupt outputs from the ADF7030, made available
-                                                     in this format to the host for use in pin-limited systems.           */
-      u8 SPIS_READY : 1;     /*!< *Instantaneous* value of the confirmation to the external host
-                                                    that the HCLK clock domain in the ADF7030 has power, is out
-                                                     of reset and has a running clock.                                    */
-    };                       /*!< BitSize                                                               */
-  };
-} ADF7030_1_STATUS_TYPE;
+typedef struct
+{
+    u16 year;
+    u8 month;
+    u8 day;
+    u8 hour;
+    u8 minute;
+    u8 second;
+    u8 week;
+} _eland_date_time;
 
 #endif

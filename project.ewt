@@ -2030,6 +2030,9 @@
   <group>
     <name>user</name>
     <file>
+      <name>$PROJ_DIR$\user_src\elandtime.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\user_src\Initial.c</name>
     </file>
     <file>
@@ -2037,6 +2040,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\user_src\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\user_src\rtc.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\user_src\stm8l15x_it.c</name>

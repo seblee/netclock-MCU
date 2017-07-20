@@ -9,7 +9,6 @@
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
 extern u8 LCDFirstDisplayFlag;
-extern u8 LCDUpdateIDFlag;
 
 void lcd_init(void);
 void send_command(u8 data);

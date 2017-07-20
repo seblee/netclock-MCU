@@ -24,8 +24,8 @@
 #include "stm8l15x_it.h"
 #include "Pin_define.h" // 管脚定义
 #include "Timer.h"      // 定时器
-#include "uart.h" // uart
-
+#include "uart.h"       // uart
+#include "rtc.h"
 /** @addtogroup STM8L15x_StdPeriph_Template
   * @{
   */
@@ -110,6 +110,7 @@ INTERRUPT_HANDLER(RTC_CSSLSE_IRQHandler, 4)
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
+    RTC_ALARM_ISR();
 }
 /**
   * @brief External IT PORTE/F and PVD Interrupt routine.
@@ -206,7 +207,7 @@ INTERRUPT_HANDLER(EXTI4_IRQHandler, 12)
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-  //  DataReceive();
+    //  DataReceive();
 }
 
 /**

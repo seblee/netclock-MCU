@@ -10,10 +10,10 @@
 #include <iostm8l151g4.h> // CPU型号
 #include "Pin_define.h"   // 管脚定义
 #include "lcd.h"          // RAM定义
-//#include "ADF7030_1.h"
-
+#include "elandtime.h"
+#include "rtc.h"
+#include <stdio.h>
 u8 LCDFirstDisplayFlag = 0;
-u8 LCDUpdateIDFlag = 1;
 
 /******************************************************************************
  * FunctionName: lcd_init
@@ -171,7 +171,6 @@ void display_map_58_6(unsigned char x, unsigned char y, unsigned char len, const
 
 void lcd_clear(unsigned char data1)
 {
-    //------ò???ê????á3ìDò
     unsigned char seg;
     unsigned char page;
     for (page = 0xb0; page < 0xb9; page++) //D′ò3μ??·128 ò3 0xb0----0xb8
@@ -228,70 +227,23 @@ void lcd_clear_3and8_line(unsigned char data1)
         }
     }
 }
-/**
- ****************************************************************************
- * @Function : void LCDTestDisplay(void)
- * @File     : lcd.c
- * @Program  :
- * @Created  : 2017/4/19 by Xiaowine
- * @Brief    :
- * @Version  : V1.0
-**/
-void LCDTestDisplay(void)
-{
-
-    if (LCDUpdateIDFlag == 1)
-    {
-        LCDUpdateIDFlag = 0;
-    }
-}
 
 /************************************************************/
 void lcd_desplay(void)
 {
-    u8 i, data;
-    u32 num;
 
-    /*if (Display_key_SW3 != Count_key_SW3)
+    if (bRTC_Update_Flag == 1)
     {
-        Display_key_SW3 = Count_key_SW3;
-        lcd_clear(1);
-
-        if (Display_key_SW3 == 0)
-        {
-            display_map_xy(40 + 0 * 25, 0, 24, 24, char_company + 0 * 72);
-            display_map_xy(40 + 1 * 25, 0, 24, 24, char_company + 1 * 72);
-        }
-        else
-        {
-            display_map_xy(40 + 0 * 25, 0, 24, 24, char_company + 2 * 72);
-            display_map_xy(40 + 1 * 25, 0, 24, 24, char_company + 3 * 72);
-        }
-        //DISPLAY  "ID_CHECKER"
-        display_map_xy(4, 32, 12, 24, char_ID_CHECKER);
-        display_map_xy(4 + 1 * 12, 32, 12, 24, char_ID_CHECKER + 1 * 36);
-        display_map_xy(4 + 3 * 12, 32, 12, 24, char_ID_CHECKER + 3 * 36);
-        display_map_xy(4 + 4 * 12, 32, 12, 24, char_ID_CHECKER + 4 * 36);
-        display_map_xy(4 + 5 * 12, 32, 12, 24, char_ID_CHECKER + 5 * 36);
-        display_map_xy(4 + 6 * 12, 32, 12, 24, char_ID_CHECKER + 6 * 36);
-        display_map_xy(4 + 7 * 12, 32, 12, 24, char_ID_CHECKER + 7 * 36);
-        display_map_xy(4 + 8 * 12, 32, 12, 24, char_ID_CHECKER + 8 * 36);
-        display_map_xy(4 + 9 * 12, 32, 12, 24, char_ID_CHECKER + 9 * 36);
-    }       */
-    if (LCDUpdateIDFlag == 1)
-    {
-        LCDUpdateIDFlag = 0;
+        bRTC_Update_Flag = 0;
         if (LCDFirstDisplayFlag == 1)
         {
             LCDFirstDisplayFlag = 0;
             lcd_clear(1);
         }
-        for (i = 0; i < 8; i++)
-        {
-            data = num % 10;
-            num = num / 10;
-            display_map_xy(1 + (7 - i) * 9, 24, 7, 16, char_Medium + data * 14);
-        }
+        sprintf((char *)&SystemStartTime.year, "%d", ElandTimeNow.year);
+
+        display_map_58_6(10, 0, 10, (const unsigned char *)&SystemStartTime.year);
+        display_map_58_6(10, 10, 8, (const unsigned char *)&SystemStartTime.hour);
     }
 }
 
