@@ -52,7 +52,6 @@ UINT16 rand_data = 0;
 u8 FLAG_SW10 = 0;
 u16 KEY_COUNT = 0;
 
-
 void main(void)
 {
     u8 Key_Value;
@@ -64,6 +63,7 @@ void main(void)
     UART1_INIT(); // UART1 for PC Software
     _EI();        // 允许中断
     WDT_init();
+    InitTimeBuff();
     lcd_init();
     ClearWDT(); // Service the WDT
     beep_init();
@@ -81,19 +81,23 @@ void main(void)
         {
             switch (Key_Value)
             {
-            case KEY_Empty:
+            case KEY_SW1_Down: //闹钟开关
+                ElandTimeSet();
                 break;
-            case KEY_SW1_Down:
+            case KEY_SW2_Down: //时刻设置
+                ElandTimeSet();
                 break;
-            case KEY_SW2_Down:
+            case KEY_SW3_Down: //时间+
+                ElandTimeSet();
                 break;
-            case KEY_SW3_Down:
+            case KEY_SW4_Down: //时间+
+                ElandTimeSet();
                 break;
-            case KEY_SW4_Down:
+            case KEY_SW5_Down: //复位
+                ElandTimeSet();
                 break;
-            case KEY_SW5_Down:
-                break;
-            case KEY_SW6_Down:
+            case KEY_SW6_Down: //模式选择
+                ElandTimeSet();
                 break;
             default:
                 break;

@@ -52,6 +52,8 @@ void lcd_init(void)
     lcd_clear(1);
     //    lcd_desplay();
     PIN_LCD_SEL = 1; // not Selected LCD
+    display_map_58_6(10, 0, 10, (const unsigned char *)&SystemStartTime.year);
+    display_map_58_6(10, 10, 8, (const unsigned char *)&SystemStartTime.hour);
 }
 
 /******************************************************************************
@@ -240,8 +242,17 @@ void lcd_desplay(void)
             LCDFirstDisplayFlag = 0;
             lcd_clear(1);
         }
-        sprintf((char *)&SystemStartTime.year, "%d", ElandTimeNow.year);
-
+        sprintf((char *)&SystemStartTime.year, "%4d", ElandTimeNow.year);
+        sprintf((char *)&SystemStartTime.month, "%02d", ElandTimeNow.month);
+        sprintf((char *)&SystemStartTime.day, "%02d", ElandTimeNow.day);
+        sprintf((char *)&SystemStartTime.hour, "%02d", ElandTimeNow.hour);
+        sprintf((char *)&SystemStartTime.minute, "%02d", ElandTimeNow.minute);
+        sprintf((char *)&SystemStartTime.second, "%02d", ElandTimeNow.second);
+        SystemStartTime.dash1 = '-';
+        SystemStartTime.dash2 = '-';
+        SystemStartTime.T = ' ';
+        SystemStartTime.colon1 = ':';
+        SystemStartTime.colon2 = ':';
         display_map_58_6(10, 0, 10, (const unsigned char *)&SystemStartTime.year);
         display_map_58_6(10, 10, 8, (const unsigned char *)&SystemStartTime.hour);
     }

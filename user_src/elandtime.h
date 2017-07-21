@@ -13,9 +13,26 @@
  ****************************************************************************
 **/
 
+typedef enum set_time_t {
+    TIME_SET_NONE = 0,
+    TIME_SET_YEAR,
+    TIME_SET_MONTH,
+    TIME_SET_DAY,
+    TIME_SET_HOUR,
+    TIME_SET_MINUTE,
+    TIME_SET_SECOND,
+    TIME_SET_WEEK
+} __set_time_t;
+
+typedef enum {
+    Soft_AP, /**< Act as an access point, and other station can connect, 4 stations Max*/
+    Station  /**< Act as a station which can connect to an access point*/
+} wlanInterfaceTypedef;
+
 extern iso8601_time_t SystemStartTime;
 extern _eland_date_time ElandTimeNow;
 
 void InitTimeBuff(void);
+void ElandTimeSet(void);
 
 #endif

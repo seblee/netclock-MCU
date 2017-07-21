@@ -111,43 +111,77 @@
 #define ADF7030DATA ADF7030_GPIO5
 */
 /******************以下是KEY寄存器*******输入*****************************/
-#define KEY_SW1 PE_IDR_IDR0
-#define KEY_SW1_DDR PE_DDR_DDR0
-#define KEY_SW1_CR1 PE_CR1_C10
-#define KEY_SW1_CR2 PE_CR2_C20
+// #define KEY_SW1 PE_IDR_IDR0
+// #define KEY_SW1_DDR PE_DDR_DDR0
+// #define KEY_SW1_CR1 PE_CR1_C10
+// #define KEY_SW1_CR2 PE_CR2_C20
 
-#define KEY_SW2 PE_IDR_IDR1
-#define KEY_SW2_DDR PE_DDR_DDR1
-#define KEY_SW2_CR1 PE_CR1_C11
-#define KEY_SW2_CR2 PE_CR2_C21
+// #define KEY_SW2 PE_IDR_IDR1
+// #define KEY_SW2_DDR PE_DDR_DDR1
+// #define KEY_SW2_CR1 PE_CR1_C11
+// #define KEY_SW2_CR2 PE_CR2_C21
 
-#define KEY_SW3 PE_IDR_IDR2
-#define KEY_SW3_DDR PE_DDR_DDR2
-#define KEY_SW3_CR1 PE_CR1_C12
-#define KEY_SW3_CR2 PE_CR2_C22
+// #define KEY_SW3 PE_IDR_IDR2
+// #define KEY_SW3_DDR PE_DDR_DDR2
+// #define KEY_SW3_CR1 PE_CR1_C12
+// #define KEY_SW3_CR2 PE_CR2_C22
 
-#define KEY_SW4 PE_IDR_IDR3
-#define KEY_SW4_DDR PE_DDR_DDR3
-#define KEY_SW4_CR1 PE_CR1_C13
-#define KEY_SW4_CR2 PE_CR2_C23
+// #define KEY_SW4 PE_IDR_IDR3
+// #define KEY_SW4_DDR PE_DDR_DDR3
+// #define KEY_SW4_CR1 PE_CR1_C13
+// #define KEY_SW4_CR2 PE_CR2_C23
 
-#define KEY_SW5 PE_IDR_IDR4
-#define KEY_SW5_DDR PE_DDR_DDR4
-#define KEY_SW5_CR1 PE_CR1_C14
-#define KEY_SW5_CR2 PE_CR2_C24
+// #define KEY_SW5 PE_IDR_IDR4
+// #define KEY_SW5_DDR PE_DDR_DDR4
+// #define KEY_SW5_CR1 PE_CR1_C14
+// #define KEY_SW5_CR2 PE_CR2_C24
 
-#define KEY_SW6 PE_IDR_IDR5
-#define KEY_SW6_DDR PE_DDR_DDR5
-#define KEY_SW6_CR1 PE_CR1_C15
-#define KEY_SW6_CR2 PE_CR2_C25
+// #define KEY_SW6 PE_IDR_IDR5
+// #define KEY_SW6_DDR PE_DDR_DDR5
+// #define KEY_SW6_CR1 PE_CR1_C15
+// #define KEY_SW6_CR2 PE_CR2_C25
 
-#define KEY_Empty 0
-#define KEY_SW1_Down 1
-#define KEY_SW2_Down 2
-#define KEY_SW3_Down 3
-#define KEY_SW4_Down 4
-#define KEY_SW5_Down 5
-#define KEY_SW6_Down 6
+#define KEY_SW1 PA_IDR_IDR0
+#define KEY_SW1_DDR PA_DDR_DDR0
+#define KEY_SW1_CR1 PA_CR1_C10
+#define KEY_SW1_CR2 PA_CR2_C20
+
+#define KEY_SW2 PD_IDR_IDR1
+#define KEY_SW2_DDR PD_DDR_DDR1
+#define KEY_SW2_CR1 PD_CR1_C11
+#define KEY_SW2_CR2 PD_CR2_C21
+
+#define KEY_SW3 PE_IDR_IDR5
+#define KEY_SW3_DDR PE_DDR_DDR5
+#define KEY_SW3_CR1 PE_CR1_C15
+#define KEY_SW3_CR2 PE_CR2_C25
+
+#define KEY_SW4 PE_IDR_IDR4
+#define KEY_SW4_DDR PE_DDR_DDR4
+#define KEY_SW4_CR1 PE_CR1_C14
+#define KEY_SW4_CR2 PE_CR2_C24
+
+#define KEY_SW5 PE_IDR_IDR3
+#define KEY_SW5_DDR PE_DDR_DDR3
+#define KEY_SW5_CR1 PE_CR1_C13
+#define KEY_SW5_CR2 PE_CR2_C23
+
+#define KEY_SW6 PE_IDR_IDR2
+#define KEY_SW6_DDR PE_DDR_DDR2
+#define KEY_SW6_CR1 PE_CR1_C12
+#define KEY_SW6_CR2 PE_CR2_C22
+
+typedef enum {
+    KEY_Empty = 0,
+    KEY_SW1_Down,
+    KEY_SW2_Down,
+    KEY_SW3_Down,
+    KEY_SW4_Down,
+    KEY_SW5_Down,
+    KEY_SW6_Down,
+} __keyvalue_;
+#define ADD_KEY KEY_SW5_Down
+#define MINUS_KEY KEY_SW5_Down
 
 /********************天线切换 CG2214M6控制引脚寄存器*****************************************/
 // #define CG2214M6_VC1 PB_ODR_ODR2     //VC1

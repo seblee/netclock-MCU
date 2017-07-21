@@ -364,28 +364,34 @@ void KEY_GPIO_Init(void)
 **/
 u8 KEY_SCAN(u8 mode)
 {
-    static u8 key_up = 1;
+    static u8 key_up = 1 ;
+    u8 keyvalue;
     if (mode)
         key_up = 1;
+
     if ((key_up) && ((KEY_SW1 == 0) || (KEY_SW2 == 0) || (KEY_SW3 == 0) ||
                      (KEY_SW4 == 0) || (KEY_SW5 == 0) || (KEY_SW6 == 0)))
     {
         key_up = 0;
+        delay(200);
         if (KEY_SW1 == 0)
-            return KEY_SW1_Down;
+            keyvalue = KEY_SW1_Down;
         else if (KEY_SW2 == 0)
-            return KEY_SW2_Down;
+            keyvalue = KEY_SW2_Down;
         else if (KEY_SW3 == 0)
-            return KEY_SW3_Down;
+            keyvalue = KEY_SW3_Down;
         else if (KEY_SW4 == 0)
-            return KEY_SW4_Down;
+            keyvalue = KEY_SW4_Down;
         else if (KEY_SW5 == 0)
-            return KEY_SW5_Down;
+            keyvalue = KEY_SW5_Down;
         else if (KEY_SW6 == 0)
-            return KEY_SW6_Down;
+            keyvalue = KEY_SW6_Down;
+
+        return keyvalue;
     }
     else if ((KEY_SW1 == 1) && (KEY_SW2 == 1) && (KEY_SW3 == 1) &&
              (KEY_SW4 == 1) && (KEY_SW5 == 1) && (KEY_SW6 == 1))
         key_up = 1;
+
     return KEY_Empty;
 }
