@@ -7,7 +7,8 @@
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
 
-#include <iostm8l151g4.h> // CPU型号
+//#include <iostm8l151g4.h> // CPU型号
+#include <iostm8l052c6.h> // CPU型号
 #include "Pin_define.h"   // 管脚定义
 #include "lcd.h"          // RAM定义
 #include "elandtime.h"

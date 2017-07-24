@@ -20,7 +20,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include <iostm8l151g4.h> // CPU型号
+//#include <iostm8l151g4.h> // CPU型号
+#include <iostm8l052c6.h> // CPU型号
 #include "Pin_define.h"   // 管脚定义
 #include "initial.h"      // 初始????? 预定?????
 #include "Timer.h"        // 定时?????
@@ -82,22 +83,21 @@ void main(void)
             switch (Key_Value)
             {
             case KEY_SW1_Down: //闹钟开关
-                ElandTimeSet();
                 break;
             case KEY_SW2_Down: //时刻设置
                 ElandTimeSet();
                 break;
             case KEY_SW3_Down: //时间+
-                ElandTimeSet();
+                if (ElandTimeSetStatus != (u8)TIME_SET_NONE)
+                    ElandTimeChange(KEY_SW3_Down);
                 break;
             case KEY_SW4_Down: //时间+
-                ElandTimeSet();
+                if (ElandTimeSetStatus != (u8)TIME_SET_NONE)
+                    ElandTimeChange(KEY_SW4_Down);
                 break;
             case KEY_SW5_Down: //复位
-                ElandTimeSet();
                 break;
             case KEY_SW6_Down: //模式选择
-                ElandTimeSet();
                 break;
             default:
                 break;

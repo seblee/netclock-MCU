@@ -5,7 +5,8 @@
 /*  CPU TYPE    :STM8L151G6     Crystal: 16M HSI                       */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
-#include <iostm8l151g4.h>
+//#include <iostm8l151g4.h> // CPU型号
+#include <iostm8l052c6.h> // CPU型号
 //#include        "stm8l15x.h"
 #include "Pin_define.h" // 管脚定义
 #include "initial.h"    // 初始化  预定义
@@ -364,7 +365,7 @@ void KEY_GPIO_Init(void)
 **/
 u8 KEY_SCAN(u8 mode)
 {
-    static u8 key_up = 1 ;
+    static u8 key_up = 1;
     u8 keyvalue;
     if (mode)
         key_up = 1;

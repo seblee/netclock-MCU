@@ -6,7 +6,8 @@
 /*  DESCRIPTION :                                                      */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
-#include <iostm8l151g4.h> // CPU型号
+//#include <iostm8l151g4.h> // CPU型号
+#include <iostm8l052c6.h> // CPU型号
 #include "Pin_define.h"   // 管脚定义
 u16 LedREDTimer = 1;
 u16 LedYELLOWTimer = 1;
@@ -27,8 +28,6 @@ void TIM4_Init(void)
 
 void TIM4_UPD_OVF(void)
 { //725==1秒
-
-
 
     TIM4_SR1_bit.UIF = 0; // 清除中断标记
 }

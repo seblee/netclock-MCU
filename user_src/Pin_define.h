@@ -180,8 +180,8 @@ typedef enum {
     KEY_SW5_Down,
     KEY_SW6_Down,
 } __keyvalue_;
-#define ADD_KEY KEY_SW5_Down
-#define MINUS_KEY KEY_SW5_Down
+#define ADD_KEY KEY_SW3_Down
+#define MINUS_KEY KEY_SW4_Down
 
 /********************天线切换 CG2214M6控制引脚寄存器*****************************************/
 // #define CG2214M6_VC1 PB_ODR_ODR2     //VC1

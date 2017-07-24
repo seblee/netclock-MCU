@@ -31,8 +31,9 @@ typedef enum {
 
 extern iso8601_time_t SystemStartTime;
 extern _eland_date_time ElandTimeNow;
+extern u8 ElandTimeSetStatus;
 
 void InitTimeBuff(void);
 void ElandTimeSet(void);
-
+void ElandTimeChange(u8 keyvalue);
 #endif

@@ -1,5 +1,6 @@
 #include "rtc.h"
-#include <iostm8l151g4.h>
+//#include <iostm8l151g4.h> // CPU型号
+#include <iostm8l052c6.h> // CPU型号
 u8 bRTC_Update_Flag = 0;
 /******************************************************************************************************
 

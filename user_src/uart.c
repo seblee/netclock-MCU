@@ -6,7 +6,8 @@
 /*  DESCRIPTION :                                                      */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
-#include <iostm8l151g4.h> // CPU型号
+//#include <iostm8l151g4.h> // CPU型号
+#include <iostm8l052c6.h> // CPU型号
 #include "Pin_define.h"   // 管脚定义
 #include "initial.h"	  // 初始化  预定义
 
@@ -26,8 +27,8 @@ void UART1_INIT(void)
 	USART1_CR2 = 0x24;
 }
 void UART1_end(void)
-{					//
-					//SYSCFG_RMPCR1_USART1TR_REMAP=0;
+{ //
+	//SYSCFG_RMPCR1_USART1TR_REMAP=0;
 	USART1_CR1 = 0; // 1个起始位,8个数据位
 	USART1_CR3 = 0; // 1个停止位
 	USART1_CR4 = 0;
@@ -70,7 +71,7 @@ void Send_String(unsigned char *string)
 	while (!USART1_SR_TC)
 		;		 // 等待完成发送
 	RXD1_enable; // 允许接收及其中断
-	//	BIT_SIO = 0;							// 标志
+				 //	BIT_SIO = 0;							// 标志
 }
 
 /***********************************************************************/
