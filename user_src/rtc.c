@@ -21,16 +21,29 @@ void RTC_Config(void)
 {
     //------打开LCD/RTC时钟------
     CLK_PCKENR2_PCKEN22 = 1;
-    //---选择LSE作为RTC时钟---
+#ifndef RTC_LSE
+    //---选择LSI作为RTC时钟---
     CLK_CRTCR_RTCSEL0 = 0;
     CLK_CRTCR_RTCSEL1 = 1;
     CLK_CRTCR_RTCSEL2 = 0;
     CLK_CRTCR_RTCSEL3 = 0;
-    /* 0000: No clock selected
+/*  0000: No clock selected
     0001: HSI clock used as RTC clock source
     0010: LSI clock used as RTC clock source
     0100: HSE clock used as RTC clock source
     1000: LSE clock used as RTC clock sourc*/
+#else
+    //---选择LSI作为RTC时钟---
+    CLK_CRTCR_RTCSEL0 = 0;
+    CLK_CRTCR_RTCSEL1 = 0;
+    CLK_CRTCR_RTCSEL2 = 0;
+    CLK_CRTCR_RTCSEL3 = 1;
+/*  0000: No clock selected
+    0001: HSI clock used as RTC clock source
+    0010: LSI clock used as RTC clock source
+    0100: HSE clock used as RTC clock source
+    1000: LSE clock used as RTC clock sourc*/
+#endif
     //----设置RTC时钟分频值----
     CLK_CRTCR_RTCDIV0 = 0;
     CLK_CRTCR_RTCDIV1 = 0;
@@ -70,12 +83,21 @@ void RTC_Time_Set(_eland_date_time time)
     RTC_DR3_YU = time.year % 10;             //year units
     RTC_CR1_FMT = 0;                         //24小时模式
 
+#ifndef RTC_LSE
     // RTC_APRER=0x7F;//保持默认值0x7F
     RTC_APRER = 0x7c; //保持默认值0x7F
     RTC_SPRERH = 0x01;
     RTC_SPRERL = 0x2F; //保持默认值0xFF
-    //以上两个RTC时钟分频值保持默认
-    //最终提供给日历模块的时钟为 32768Hz/( (303+1)*(124+1) ) =1Hz
+//38000Hz / ((303 + 1) * (124 + 1)) = 1Hz
+#else
+    // RTC_APRER=0x7F;//保持默认值0x7F
+    RTC_APRER = 0x7f; //保持默认值0x7F
+    RTC_SPRERH = 0x00;
+    RTC_SPRERL = 0xff; //保持默认值0xFF
+
+//以上两个RTC时钟分频值保持默认
+//最终提供给日历模块的时钟为 32768Hz/( (127+1)*(255+1) ) =1Hz
+#endif
     RTC_ISR1_INIT = 0; //退出初始化模式
     //设置闹钟
     RTC_CR2_ALRAE = 0; //disable the alarm

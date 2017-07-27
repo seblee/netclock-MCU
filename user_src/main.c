@@ -72,12 +72,13 @@ void main(void)
     srand((unsigned)time(NULL));
     RTC_Config();
     RTC_Time_Set(ElandTimeNow);
+
     while (1)
     {
         ClearWDT(); // Service the WDT
         lcd_desplay();
         Key_Value = KEY_SCAN(0);
-        LEDCtr();
+        LEDCtr(Key_Value);
         if (Key_Value != KEY_Empty)
         {
             switch (Key_Value)
@@ -91,7 +92,7 @@ void main(void)
                 if (ElandTimeSetStatus != (u8)TIME_SET_NONE)
                     ElandTimeChange(KEY_SW3_Down);
                 break;
-            case KEY_SW4_Down: //时间+
+            case KEY_SW4_Down: //时间-
                 if (ElandTimeSetStatus != (u8)TIME_SET_NONE)
                     ElandTimeChange(KEY_SW4_Down);
                 break;

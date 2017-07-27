@@ -11,8 +11,8 @@
 /***********************************************************************/
 #include "type_def.h"
 
-extern u16 LedREDTimer;
-extern u16 LedYELLOWTimer;
+extern u16 LedTimer;
+extern u16 LedScanCtrTimer;
 extern u16 ErrStateTimeer;
 extern uFLAG LedFlag;
 extern u16 StateReadTimer;

@@ -12,10 +12,9 @@
 #include "initial.h"    // 初始化  预定义
 #include "uart.h"       // uart
 #include "lcd.h"
+#include "elandtime.h"
 u16 X_COUNT = 0;
 u16 X_ERR = 0; //记录错误的个数
-
-uFLAG YellowLedFlag, RedLedFalg;
 
 void RAM_clean(void)
 { // 清除RAM
@@ -103,10 +102,15 @@ void SysClock_Init(void)
     //CLK_PCKENR1 = 0x84;						// T1,UART1
     CLK_PCKENR1 = 0x64; // T4,UART1,beep
     CLK_PCKENR2 = 0x03; // ADC,T1
-
+#ifndef RTC_LSE
     CLK_ICKCR_LSION = 1; // 使能内部LSI OSC（38KHz）
     while (CLK_ICKCR_LSIRDY == 0)
         ; // 检查内部LSI OSC
+#else
+    CLK_ECKR_LSEON = 1; // 使能内部LSE OSC（32.768KHz）
+    while (CLK_ECKR_LSERDY == 0)
+        ; // 检查内部LSE OSC
+#endif
 }
 
 void beep_init(void)
@@ -138,16 +142,17 @@ void Delayus(unsigned char timer)
 **/
 void LED_GPIO_Init(void)
 {
-    LED_YELLOW_DDR = Output; /* 设置数据方向寄存器 1为输出，0为输入--查看STM8寄存器.pdf P87 */
-    LED_YELLOW_CR1 = 1;      /* 设置推挽输出--查看STM8寄存器RM0031.pdf 10.9*/
-    LED_YELLOW_CR2 = 1;      /* 设置输出频率 1为10M，0为2M--查看STM8寄存器.pdf P89 */
-
     LED_RED_DDR = Output; /* 设置数据方向寄存器 1为输出，0为输入--查看STM8寄存器.pdf P87 */
     LED_RED_CR1 = 1;      /* 设置推挽输出--查看STM8寄存器RM0031.pdf 10.9*/
     LED_RED_CR2 = 1;      /* 设置输出频率 1为10M，0为2M--查看STM8寄存器.pdf P89 */
-    //  PC_DDR|=0x03;   /* 设置数据方向寄存器 1为输出，0为输入--查看STM8寄存器.pdf P87 */
-    //  PC_CR1|=0x03;   /* 设置推挽输出--查看STM8寄存器RM0031.pdf 10.9*/
-    //  PC_CR2|=0x03;   /* 设置输出频率 1为10M，0为2M--查看STM8寄存器.pdf P89 */
+
+    LED_GREEN_DDR = Output; /* 设置数据方向寄存器 1为输出，0为输入--查看STM8寄存器.pdf P87 */
+    LED_GREEN_CR1 = 1;      /* 设置推挽输出--查看STM8寄存器RM0031.pdf 10.9*/
+    LED_GREEN_CR2 = 1;      /* 设置输出频率 1为10M，0为2M--查看STM8寄存器.pdf P89 */
+
+    LED_BLUE_DDR = Output; /* 设置数据方向寄存器 1为输出，0为输入--查看STM8寄存器.pdf P87 */
+    LED_BLUE_CR1 = 1;      /* 设置推挽输出--查看STM8寄存器RM0031.pdf 10.9*/
+    LED_BLUE_CR2 = 1;      /* 设置输出频率 1为10M，0为2M--查看STM8寄存器.pdf P89 */
 }
 /**
  ****************************************************************************
@@ -158,74 +163,67 @@ void LED_GPIO_Init(void)
  * @Brief    :
  * @Version  : V1.0
 **/
-void LEDCtr(void)
+void LEDCtr(u8 keyval)
 {
-    switch (YellowStutue & 0x0f)
+    static __LEDState_type_ LedState = LED_NONE_type;
+    static u8 LedScanStatus = 0;
+    if (ElandTimeSetStatus == (u8)TIME_SET_NONE)
     {
-    case LEDOFFFLAG:
-        YELLOWLED_OFF()
-        break;
-    case LEDONFLAG:
-        LED_YELLOW = LED_ON;
-        break;
-    case LEDFLASHASECONDFLAG:
-    {
-        if (YellowStutue & 0x80)
+        if ((KEY_SW3 == 0) && (KEY_SW4 == 0))
         {
-            YELLOWLED_FLASH_SECOND();
-            YellowStutue &= 0x7F;
+            if (LedScanCtrTimer == 0)
+            {
+                LedScanStatus = (LedScanStatus == 0) ? 1 : 0;
+                LedScanCtrTimer = 3000;
+            }
         }
-        if (LedYELLOWTimer == 1)
-            YellowStutue = LEDOFFFLAG;
+        else
+            LedScanCtrTimer = 3000;
     }
-    break;
-    case LEDFLASHFLAG:
+    if ((LedTimer == 0) && (LedScanStatus == 1))
     {
-        if (YellowStutue & 0x80)
+        LedTimer = 750;
+        switch (LedState)
         {
-            YELLOWLED_FLASH();
-            YellowStutue &= 0x7F;
+        case LED_RED_type:
+            LED_RED = LED_ON;
+            LED_GREEN = LED_OFF;
+            LED_BLUE = LED_OFF;
+            LedState = LED_GREEN_type;
+            break;
+        case LED_GREEN_type:
+            LED_RED = LED_OFF;
+            LED_GREEN = LED_ON;
+            LED_BLUE = LED_OFF;
+            LedState = LED_BLUE_type;
+            break;
+        case LED_BLUE_type:
+            LED_RED = LED_OFF;
+            LED_GREEN = LED_OFF;
+            LED_BLUE = LED_ON;
+            LedState = LED_ALL_type;
+            break;
+        case LED_ALL_type:
+            LED_RED = LED_ON;
+            LED_GREEN = LED_ON;
+            LED_BLUE = LED_ON;
+            LedState = LED_NONE_type;
+            break;
+        case LED_NONE_type:
+            LED_RED = LED_OFF;
+            LED_GREEN = LED_OFF;
+            LED_BLUE = LED_OFF;
+            LedState = LED_RED_type;
+            break;
+        default:
+            break;
         }
-        else if (LedYELLOWTimer == 1)
-            YELLOWLED_FLASH();
     }
-    break;
-    default:
-        break;
-    }
-
-    switch (RedStutue & 0x0f)
+    else if (LedScanStatus == 0)
     {
-    case LEDOFFFLAG:
-        REDLED_OFF()
-        break;
-    case LEDONFLAG:
-        LED_RED = LED_ON;
-        break;
-    case LEDFLASHASECONDFLAG:
-    {
-        if (RedStutue & 0x80)
-        {
-            REDLED_FLASH_SECOND();
-            RedStutue &= 0x7F;
-        }
-        if (LedREDTimer == 1)
-            RedStutue = LEDOFFFLAG;
-    }
-    break;
-    case LEDFLASHFLAG:
-    {
-        if (RedStutue & 0x80)
-        {
-            REDLED_FLASH();
-            RedStutue &= 0x7F;
-        }
-        else if (LedREDTimer == 1)
-            REDLED_FLASH();
-    }
-    break;
-    default:
-        break;
+        LED_RED = LED_OFF;
+        LED_GREEN = LED_OFF;
+        LED_BLUE = LED_OFF;
     }
 }
 

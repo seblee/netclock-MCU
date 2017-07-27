@@ -16,6 +16,7 @@ void send_data(u8 data);
 void delay(u16 i);
 void display_map_xy(unsigned char x, unsigned char y, unsigned char l, unsigned char h, const unsigned char *p);
 void display_map_58_6(unsigned char x, unsigned char y, unsigned char len, const unsigned char *p);
+void display_map_8_16(unsigned char x, unsigned char y, unsigned char len, const unsigned char *p);
 void lcd_clear(unsigned char data1);
 void lcd_desplay(void);
 void LCD_display_argos_rssi(unsigned int m);
@@ -31,5 +32,6 @@ extern const unsigned char char_Medium[];
 extern const unsigned char char_Contro[];
 extern const unsigned char char_RSSI[];
 extern const unsigned char char_Medium[];
+extern const unsigned char char_Medium8_16[];
 
 #endif

@@ -43,14 +43,6 @@ typedef union { // ID No.
 extern u16 X_COUNT;
 extern u16 X_ERR; //记录错误的个数
 
-extern uFLAG YellowLedFlag, RedLedFalg;
-#define YellowStutue YellowLedFlag.BYTE
-#define RedStutue RedLedFalg.BYTE
-#define LEDOFFFLAG 0
-#define LEDONFLAG 1
-#define LEDFLASHASECONDFLAG 2
-#define LEDFLASHFLAG 3
-
 void LED_GPIO_Init(void);      //初始化LED
 void LCD_GPIO_Init(void);      //初始化LCD IO
 void KEY_GPIO_Init(void);      //KEY IO
@@ -65,6 +57,6 @@ void Delayus(unsigned char timer);
 void WDT_init(void);
 void ClearWDT(void);
 void RF_BRE_Check(void);
-void LEDCtr(void);
+void LEDCtr(u8 keyval);
 
 #endif

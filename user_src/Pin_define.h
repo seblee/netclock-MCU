@@ -14,48 +14,29 @@
 /********************LED寄存器*****************************************/
 #define LED_ON 1
 #define LED_OFF 0
-#define LED_YELLOW PC_ODR_ODR0     //黄灯
-#define LED_YELLOW_DDR PC_DDR_DDR0 //黄灯方向
-#define LED_YELLOW_CR1 PC_CR1_C10  //黄灯类型
-#define LED_YELLOW_CR2 PC_CR2_C20  //黄灯输出频率
 
-#define LED_RED PC_ODR_ODR1     //红灯
-#define LED_RED_DDR PC_DDR_DDR1 //方向
-#define LED_RED_CR1 PC_CR1_C11  //类型
-#define LED_RED_CR2 PC_CR2_C21  //输出频率
+#define LED_RED PB_ODR_ODR5     //红灯
+#define LED_RED_DDR PB_DDR_DDR5 //方向
+#define LED_RED_CR1 PB_CR1_C15  //类型
+#define LED_RED_CR2 PB_CR2_C25  //输出频率
 
-#define YELLOWLED_FLASH_SECOND() \
-    {                            \
-        LED_YELLOW = LED_ON;     \
-        LedYELLOWTimer = 750;    \
-    }
-#define YELLOWLED_OFF()       \
-    {                         \
-        LED_YELLOW = LED_OFF; \
-        LedYELLOWTimer = 0;   \
-    }
-#define YELLOWLED_FLASH()         \
-    {                             \
-        LED_YELLOW = !LED_YELLOW; \
-        LedYELLOWTimer = 60;      \
-    }
+#define LED_GREEN PB_ODR_ODR6     //绿灯
+#define LED_GREEN_DDR PB_DDR_DDR6 //方向
+#define LED_GREEN_CR1 PB_CR1_C16  //类型
+#define LED_GREEN_CR2 PB_CR2_C26  //输出频率
 
-#define REDLED_FLASH_SECOND() \
-    {                         \
-        LED_RED = LED_ON;     \
-        LedREDTimer = 750;    \
-    }
-#define REDLED_OFF()       \
-    {                      \
-        LED_RED = LED_OFF; \
-        LedREDTimer = 0;   \
-    }
-#define REDLED_FLASH()      \
-    {                       \
-        LED_RED = !LED_RED; \
-        LedREDTimer = 60;   \
-    }
+#define LED_BLUE PB_ODR_ODR4     //蓝灯
+#define LED_BLUE_DDR PB_DDR_DDR4 //方向
+#define LED_BLUE_CR1 PB_CR1_C14  //类型
+#define LED_BLUE_CR2 PB_CR2_C24  //输出频率
 
+typedef enum {
+    LED_RED_type = 0,
+    LED_GREEN_type,
+    LED_BLUE_type,
+    LED_ALL_type,
+    LED_NONE_type,
+} __LEDState_type_;
 /********************LCD寄存器*****************************************/
 #define PIN_LCD_SCLK PD_ODR_ODR3  // 输出；LCD串行时钟(√)
 #define PIN_LCD_RST PB_ODR_ODR1   // 输出；LCD复位脚  低电平有效(√)
@@ -111,65 +92,65 @@
 #define ADF7030DATA ADF7030_GPIO5
 */
 /******************以下是KEY寄存器*******输入*****************************/
-// #define KEY_SW1 PE_IDR_IDR0
-// #define KEY_SW1_DDR PE_DDR_DDR0
-// #define KEY_SW1_CR1 PE_CR1_C10
-// #define KEY_SW1_CR2 PE_CR2_C20
+#define KEY_SW1 PE_IDR_IDR0
+#define KEY_SW1_DDR PE_DDR_DDR0
+#define KEY_SW1_CR1 PE_CR1_C10
+#define KEY_SW1_CR2 PE_CR2_C20
 
-// #define KEY_SW2 PE_IDR_IDR1
-// #define KEY_SW2_DDR PE_DDR_DDR1
-// #define KEY_SW2_CR1 PE_CR1_C11
-// #define KEY_SW2_CR2 PE_CR2_C21
+#define KEY_SW2 PE_IDR_IDR1
+#define KEY_SW2_DDR PE_DDR_DDR1
+#define KEY_SW2_CR1 PE_CR1_C11
+#define KEY_SW2_CR2 PE_CR2_C21
 
-// #define KEY_SW3 PE_IDR_IDR2
-// #define KEY_SW3_DDR PE_DDR_DDR2
-// #define KEY_SW3_CR1 PE_CR1_C12
-// #define KEY_SW3_CR2 PE_CR2_C22
+#define KEY_SW3 PE_IDR_IDR2
+#define KEY_SW3_DDR PE_DDR_DDR2
+#define KEY_SW3_CR1 PE_CR1_C12
+#define KEY_SW3_CR2 PE_CR2_C22
 
-// #define KEY_SW4 PE_IDR_IDR3
-// #define KEY_SW4_DDR PE_DDR_DDR3
-// #define KEY_SW4_CR1 PE_CR1_C13
-// #define KEY_SW4_CR2 PE_CR2_C23
+#define KEY_SW4 PE_IDR_IDR3
+#define KEY_SW4_DDR PE_DDR_DDR3
+#define KEY_SW4_CR1 PE_CR1_C13
+#define KEY_SW4_CR2 PE_CR2_C23
 
-// #define KEY_SW5 PE_IDR_IDR4
-// #define KEY_SW5_DDR PE_DDR_DDR4
-// #define KEY_SW5_CR1 PE_CR1_C14
-// #define KEY_SW5_CR2 PE_CR2_C24
+#define KEY_SW5 PE_IDR_IDR4
+#define KEY_SW5_DDR PE_DDR_DDR4
+#define KEY_SW5_CR1 PE_CR1_C14
+#define KEY_SW5_CR2 PE_CR2_C24
 
-// #define KEY_SW6 PE_IDR_IDR5
-// #define KEY_SW6_DDR PE_DDR_DDR5
-// #define KEY_SW6_CR1 PE_CR1_C15
-// #define KEY_SW6_CR2 PE_CR2_C25
+#define KEY_SW6 PE_IDR_IDR5
+#define KEY_SW6_DDR PE_DDR_DDR5
+#define KEY_SW6_CR1 PE_CR1_C15
+#define KEY_SW6_CR2 PE_CR2_C25
 
-#define KEY_SW1 PA_IDR_IDR0
-#define KEY_SW1_DDR PA_DDR_DDR0
-#define KEY_SW1_CR1 PA_CR1_C10
-#define KEY_SW1_CR2 PA_CR2_C20
+// #define KEY_SW1 PA_IDR_IDR0
+// #define KEY_SW1_DDR PA_DDR_DDR0
+// #define KEY_SW1_CR1 PA_CR1_C10
+// #define KEY_SW1_CR2 PA_CR2_C20
 
-#define KEY_SW2 PD_IDR_IDR1
-#define KEY_SW2_DDR PD_DDR_DDR1
-#define KEY_SW2_CR1 PD_CR1_C11
-#define KEY_SW2_CR2 PD_CR2_C21
+// #define KEY_SW2 PD_IDR_IDR1
+// #define KEY_SW2_DDR PD_DDR_DDR1
+// #define KEY_SW2_CR1 PD_CR1_C11
+// #define KEY_SW2_CR2 PD_CR2_C21
 
-#define KEY_SW3 PE_IDR_IDR5
-#define KEY_SW3_DDR PE_DDR_DDR5
-#define KEY_SW3_CR1 PE_CR1_C15
-#define KEY_SW3_CR2 PE_CR2_C25
+// #define KEY_SW3 PE_IDR_IDR5
+// #define KEY_SW3_DDR PE_DDR_DDR5
+// #define KEY_SW3_CR1 PE_CR1_C15
+// #define KEY_SW3_CR2 PE_CR2_C25
 
-#define KEY_SW4 PE_IDR_IDR4
-#define KEY_SW4_DDR PE_DDR_DDR4
-#define KEY_SW4_CR1 PE_CR1_C14
-#define KEY_SW4_CR2 PE_CR2_C24
+// #define KEY_SW4 PE_IDR_IDR4
+// #define KEY_SW4_DDR PE_DDR_DDR4
+// #define KEY_SW4_CR1 PE_CR1_C14
+// #define KEY_SW4_CR2 PE_CR2_C24
 
-#define KEY_SW5 PE_IDR_IDR3
-#define KEY_SW5_DDR PE_DDR_DDR3
-#define KEY_SW5_CR1 PE_CR1_C13
-#define KEY_SW5_CR2 PE_CR2_C23
+// #define KEY_SW5 PE_IDR_IDR3
+// #define KEY_SW5_DDR PE_DDR_DDR3
+// #define KEY_SW5_CR1 PE_CR1_C13
+// #define KEY_SW5_CR2 PE_CR2_C23
 
-#define KEY_SW6 PE_IDR_IDR2
-#define KEY_SW6_DDR PE_DDR_DDR2
-#define KEY_SW6_CR1 PE_CR1_C12
-#define KEY_SW6_CR2 PE_CR2_C22
+// #define KEY_SW6 PE_IDR_IDR2
+// #define KEY_SW6_DDR PE_DDR_DDR2
+// #define KEY_SW6_CR1 PE_CR1_C12
+// #define KEY_SW6_CR2 PE_CR2_C22
 
 typedef enum {
     KEY_Empty = 0,

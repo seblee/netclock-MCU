@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1689434748
+Checksum=1278717775
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -95,7 +95,8 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Count=0
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\user_src\main.c}.79.9" 1 0 0 0 "" 0 ""
+Count=1
 [Aliases]
 Count=0
 SuppressDialog=0

@@ -12,9 +12,12 @@
  * @brief   :
  ****************************************************************************
 **/
+
+//#define RTC_LSE
+
 extern u8 bRTC_Update_Flag;
 
 void RTC_Config(void);
 void RTC_Time_Set(_eland_date_time time);
-       void RTC_ALARM_ISR(void);
+void RTC_ALARM_ISR(void);
 #endif

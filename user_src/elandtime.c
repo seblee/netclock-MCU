@@ -56,24 +56,24 @@ void ElandTimeSet(void)
         ElandTime_For_Set[5] = ElandTimeNow.second;
 
         Time_Set_Select_Num = 1;
-        display_map_58_6(10, 20, 6, (const unsigned char *)&TimeSetString[ElandTimeSetStatus]);
+        display_map_8_16(10, 36, 6, (const unsigned char *)&TimeSetString[ElandTimeSetStatus]);
         sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus]);
-        display_map_58_6(46, 20, 2, (const unsigned char *)Cache);
-        display_map_58_6(46 + ((1 - Time_Set_Select_Num) * 6), 30, 2, "* ");
+        display_map_8_16(58, 36, 2, (const unsigned char *)Cache);
+        display_map_8_16(58 + ((1 - Time_Set_Select_Num) * 6), 48, 2, "* ");
         ElandTimeSetStatus = TIME_SET_YEAR;
     }
     else if (ElandTimeSetStatus == (u8)TIME_SET_SECOND)
     {
         if (Time_Set_Select_Num > 0)
         {
-            display_map_58_6(46, 30, 2, " *");
+            display_map_8_16(58, 48, 2, " *");
             Time_Set_Select_Num--;
         }
         else
         {
             Time_Set_Select_Num = 1;
-            display_map_58_6(10, 20, 8, "        ");
-            display_map_58_6(46, 30, 2, "  ");
+            display_map_8_16(10, 36, 8, "        ");
+            display_map_8_16(58, 48, 2, "  ");
             ElandTimeNow.year = 2000 + ElandTime_For_Set[0];
             ElandTimeNow.month = ElandTime_For_Set[1];
             ElandTimeNow.day = ElandTime_For_Set[2];
@@ -88,16 +88,16 @@ void ElandTimeSet(void)
     {
         if (Time_Set_Select_Num > 0)
         {
-            display_map_58_6(46, 30, 2, " *");
+            display_map_8_16(58, 48, 2, " *");
             Time_Set_Select_Num--;
         }
         else
         {
             Time_Set_Select_Num = 1;
-            display_map_58_6(10, 20, 6, (const unsigned char *)&TimeSetString[ElandTimeSetStatus]);
+            display_map_8_16(10, 36, 6, (const unsigned char *)&TimeSetString[ElandTimeSetStatus]);
             sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus]);
-            display_map_58_6(46, 20, 4, (const unsigned char *)Cache);
-            display_map_58_6(46, 30, 2, "* ");
+            display_map_8_16(58, 36, 4, (const unsigned char *)Cache);
+            display_map_8_16(58, 48, 2, "* ");
             ElandTimeSetStatus++;
         }
     }
@@ -155,7 +155,7 @@ void ElandTimeChange(u8 keyvalue)
                 ElandTime_For_Set[ElandTimeSetStatus - 1] = 99;
         }
         sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus - 1]);
-        display_map_58_6(46, 20, 2, (const unsigned char *)Cache);
+        display_map_8_16(58, 36, 2, (const unsigned char *)Cache);
         break;
     case TIME_SET_MONTH:
         if (ADD_KEY == keyvalue)
@@ -169,7 +169,7 @@ void ElandTimeChange(u8 keyvalue)
                 ElandTime_For_Set[ElandTimeSetStatus - 1] -= (Time_Set_Select_Num ? 10 : 1);
         }
         sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus - 1]);
-        display_map_58_6(46, 20, 2, (const unsigned char *)Cache);
+        display_map_8_16(58, 36, 2, (const unsigned char *)Cache);
         break;
     case TIME_SET_DAY:
         if ((ElandTime_For_Set[1] == 1) || (ElandTime_For_Set[1] == 3) || (ElandTime_For_Set[1] == 5) || (ElandTime_For_Set[1] == 7) ||
@@ -197,7 +197,7 @@ void ElandTimeChange(u8 keyvalue)
                 ElandTime_For_Set[ElandTimeSetStatus - 1] -= (Time_Set_Select_Num ? 10 : 1);
         }
         sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus - 1]);
-        display_map_58_6(46, 20, 2, (const unsigned char *)Cache);
+        display_map_8_16(58, 36, 2, (const unsigned char *)Cache);
         break;
     case TIME_SET_HOUR:
         if (ADD_KEY == keyvalue)
@@ -211,7 +211,7 @@ void ElandTimeChange(u8 keyvalue)
                 ElandTime_For_Set[ElandTimeSetStatus - 1] -= (Time_Set_Select_Num ? 10 : 1);
         }
         sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus - 1]);
-        display_map_58_6(46, 20, 2, (const unsigned char *)Cache);
+        display_map_8_16(58, 36, 2, (const unsigned char *)Cache);
         break;
     case TIME_SET_MINUTE:
         if (ADD_KEY == keyvalue)
@@ -225,7 +225,7 @@ void ElandTimeChange(u8 keyvalue)
                 ElandTime_For_Set[ElandTimeSetStatus - 1] -= (Time_Set_Select_Num ? 10 : 1);
         }
         sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus - 1]);
-        display_map_58_6(46, 20, 2, (const unsigned char *)Cache);
+        display_map_8_16(58, 36, 2, (const unsigned char *)Cache);
         break;
     case TIME_SET_SECOND:
         if (ADD_KEY == keyvalue)
@@ -239,7 +239,7 @@ void ElandTimeChange(u8 keyvalue)
                 ElandTime_For_Set[ElandTimeSetStatus - 1] -= (Time_Set_Select_Num ? 10 : 1);
         }
         sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus - 1]);
-        display_map_58_6(46, 20, 2, (const unsigned char *)Cache);
+        display_map_8_16(58, 36, 2, (const unsigned char *)Cache);
         break;
     default:
         break;
