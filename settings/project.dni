@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=-1727612253
+Checksum=-802575923
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -88,8 +88,6 @@ Fmt11={W}42:CCA_READBACK_Cache	4	0
 LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
-[Breakpoints]
-Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -97,6 +95,9 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[Breakpoints]
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\user_src\elandtime.c}.100.13" 1 0 0 0 "" 0 ""
+Count=1
 [Aliases]
 Count=0
 SuppressDialog=0

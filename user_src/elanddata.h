@@ -7,6 +7,9 @@ typedef enum {
     ElandAPStatus,
     ElandHttpServerStatus,
     ElandWifyConnectedStatus,
+    ElandAliloPlay,
+    ElandAliloPause,
+    ElandAliloStop,
 } Eland_Status_type;
 
 extern u8 ElandReceiveBuff[11];

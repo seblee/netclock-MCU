@@ -274,7 +274,7 @@ void lcd_desplay(void)
         // display_map_58_6(10, 10, 8, (const unsigned char *)&SystemStartTime.hour);
 
         display_map_8_16(10, 0, 10, (const unsigned char *)&SystemStartTime.year);
-        display_map_8_16(10, 20, 8, (const unsigned char *)&SystemStartTime.hour);
+        display_map_8_16(10, 16, 8, (const unsigned char *)&SystemStartTime.hour);
 
         switch (ElandReceiveBuff[1])
         {
@@ -289,6 +289,15 @@ void lcd_desplay(void)
             break;
         case ElandWifyConnectedStatus:
             display_map_58_6(10, 56, 10, "wifi_OK   ");
+            break;
+        case ElandAliloPlay:
+            display_map_58_6(10, 56, 10, "AliloPlay ");
+            break;
+        case ElandAliloPause:
+            display_map_58_6(10, 56, 10, "AliloPause");
+            break;
+        case ElandAliloStop:
+            display_map_58_6(10, 56, 10, "AliloStop ");
             break;
         default:
             break;

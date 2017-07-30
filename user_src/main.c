@@ -63,7 +63,7 @@ void main(void)
     TIM4_Init();
     UART1_INIT(); // UART1 for PC Software
     _EI();        // 允许中断
-    WDT_init();
+    //WDT_init();
     InitTimeBuff();
     lcd_init();
     ClearWDT(); // Service the WDT
