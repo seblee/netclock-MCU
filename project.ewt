@@ -2030,6 +2030,9 @@
   <group>
     <name>user</name>
     <file>
+      <name>$PROJ_DIR$\user_src\elanddata.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\user_src\elandtime.c</name>
     </file>
     <file>

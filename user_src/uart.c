@@ -10,21 +10,39 @@
 #include <iostm8l052c6.h> // CPU型号
 #include "Pin_define.h"   // 管脚定义
 #include "initial.h"	  // 初始化  预定义
-
+#include "elanddata.h"
+#include "uart.h"
 #define TXD1_enable (USART1_CR2 = 0x08) // 允许发送
 #define RXD1_enable (USART1_CR2 = 0x24) // 允许接收及其中断
 //********************************************
 void UART1_INIT(void)
 {
-	USART1_CR1 = 0; // 1个起始位,8个数据位
+    unsigned int baud_div = 0;
+	USART1_CR1 = 1; // 1个起始位,8个数据位
 	USART1_CR3 = 0; // 1个停止位
 	USART1_CR4 = 0;
-	USART1_CR5 = 0x00;  //0x08;						// 半双工模式
-	USART1_BRR2 = 0x03; // 设置波特率9600
-	USART1_BRR1 = 0x68; // 3.6864M/9600 = 0x180
-						//16.00M/9600 = 0x683
-						//USART1_CR2 = 0x08;	// 允许发送
+	USART1_CR5 = 0x00; //0x08;						// 半双工模式
+
+	//USART1_BRR2 = 0x03; // 设置波特率9600
+	//USART1_BRR1 = 0x68; // 3.6864M/9600 = 0x180
+	//16.00M/9600 = 0x683
+
+	//USART1_BRR2 = 0x01; // 设置波特率38400
+	//USART1_BRR1 = 0xa1; // 16.00M/38400 = 0x1a1
+
+
+    	/*设置波特率*/
+	baud_div = 16000000 / 57600; /*求出分频因子*/
+	USART1_BRR2 = baud_div & 0x0f;
+	USART1_BRR2 |= ((baud_div & 0xf000) >> 8);
+	USART1_BRR1 = ((baud_div & 0x0ff0) >> 4); /*先给BRR2赋值 最后再设置BRR1*/
+
+
+	//USART1_CR2 = 0x08;	// 允许发送
 	USART1_CR2 = 0x24;
+
+
+    Send_String("12345632adf{}");
 }
 void UART1_end(void)
 { //
@@ -43,6 +61,8 @@ void UART1_RX_RXNE(void)
 { // RXD中断服务程序
 	unsigned char dat;
 	dat = USART1_DR; // 接收数据
+	ReceiveFromEland(dat);
+	//Send_char(dat);
 }
 
 //--------------------------------------------
@@ -101,110 +121,4 @@ unsigned char asc_hex_2(unsigned char asc1, unsigned char asc0)
 	unsigned char i;
 	i = (asc_hex(asc1) << 4) + (asc_hex(asc0) & 0x0F);
 	return i;
-}
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-void PC_PRG(void) // 串口命令
-{
-
-	//	unsigned int  i,j;
-	//unsigned char  d3,d2,d1,d0;
-	/*
-	if (BIT_SIO){
-		BIT_SIO = 0;
-		//SIO_TOT = 20;
-		switch (SIO_DATA[1]){
-		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		//%                 写操作               %
-		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		case 'W':
-			//==================================== ADF7012
-			if (SIO_DATA[2]=='I')				// (WIxd0d1d2d3)
-			{
-			        i = asc_hex_2(0x30,SIO_buff[3]);
-				d0 = asc_hex_2(SIO_buff[4],SIO_buff[5]);
-				d1 = asc_hex_2(SIO_buff[6],SIO_buff[7]);
-				d2 = asc_hex_2(SIO_buff[8],SIO_buff[9]);
-				d3 = asc_hex_2(SIO_buff[10],SIO_buff[11]);
-
-	                        //write Rx
-                                ROM_adf7012_value[i].byte[0] = d0;
-				ROM_adf7012_value[i].byte[1] = d1;
-				ROM_adf7012_value[i].byte[2] = d2;
-				ROM_adf7012_value[i].byte[3] = d3;
-                                dd_write_7021_reg(&ROM_adf7012_value[i].byte[0]);
-                                Delayus(122);		//delay 40us
-
-				//-------------------------------- 保存
-				if(i==1){
-				     j=0x380+i*4;
-				     UnlockFlash( UNLOCK_EEPROM_TYPE );
-				     WriteByteToFLASH(addr_eeprom_sys+j,d0);
-				     WriteByteToFLASH(addr_eeprom_sys+j+1,d1);
-				     WriteByteToFLASH(addr_eeprom_sys+j+2,d2);
-				     WriteByteToFLASH(addr_eeprom_sys+j+3,d3);
-				     LockFlash( UNLOCK_EEPROM_TYPE );
-
-				     ClearWDT(); // Service the WDT
-				}
-				//-------------------------------返回  (WHx)
-				d1 = '(';
-				d2 = 'W';
-				Send_char(d1);
-				Send_char(d2);
-				d1 = 'I';
-				d2 = ')';
-				Send_char(d1);
-				Send_char(d2);
-				Send_char(SIO_buff[3]);
-
-			}
-
-			//==================================== ADF7012 TX/RX调试
-			if (SIO_DATA[2]=='J')				// (WJx)
-			{
-			        Tx_Rx_mode = asc_hex_2(0x30,SIO_buff[3]);
-				//-------------------------------返回  (WHx)
-				d1 = '(';
-				d2 = 'W';
-				Send_char(d1);
-				Send_char(d2);
-				d1 = 'J';
-				d2 = ')';
-				Send_char(d1);
-				Send_char(d2);
-				Send_char(SIO_buff[3]);
-
-			}
-		        break;
-		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		//%                 读操作               %
-		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		case 'R':
-			//==================================== ADF7012   //(RIx)
-			if (SIO_DATA[2]=='I')				// (RI)d0d1d2d3
-			{
-			        i = asc_hex_2(0x30,SIO_buff[3]);
-			  	d1 = '(';
-				d2 = 'R';
-				Send_char(d1);
-				Send_char(d2);
-				d1 = 'I';
-				d2 = ')';
-				Send_char(d1);
-				Send_char(d2);
-				for (j=0;j<4;j++){
-			  	   d1 = hex_asc(ROM_adf7012_value[i].byte[j] / 16);
-				   d2 = hex_asc(ROM_adf7012_value[i].byte[j] % 16);
-				   Send_char(d1);
-				   Send_char(d2);
-				}
-                        }
-		        break;
-		default:
-			break;
-
-		}
-	}
-*/
 }

@@ -609,7 +609,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\config\lnkstm8l151g4.icf</state>
+          <state>$TOOLKIT_DIR$\config\lnkstm8l052c6.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1682,6 +1682,9 @@
   </group>
   <group>
     <name>user</name>
+    <file>
+      <name>$PROJ_DIR$\user_src\elanddata.c</name>
+    </file>
     <file>
       <name>$PROJ_DIR$\user_src\elandtime.c</name>
     </file>

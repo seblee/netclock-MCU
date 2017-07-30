@@ -14,6 +14,8 @@
 #include "elandtime.h"
 #include "rtc.h"
 #include <stdio.h>
+#include "elanddata.h"
+
 u8 LCDFirstDisplayFlag = 0;
 
 /******************************************************************************
@@ -252,8 +254,8 @@ void lcd_desplay(void)
         bRTC_Update_Flag = 0;
         if (LCDFirstDisplayFlag == 1)
         {
-            if (LCDFirstDisplayDelay++ < 5)
-                return;
+            //            if (LCDFirstDisplayDelay++ < 1)
+            //                return;
             LCDFirstDisplayFlag = 0;
             lcd_clear(1);
         }
@@ -273,6 +275,24 @@ void lcd_desplay(void)
 
         display_map_8_16(10, 0, 10, (const unsigned char *)&SystemStartTime.year);
         display_map_8_16(10, 20, 8, (const unsigned char *)&SystemStartTime.hour);
+
+        switch (ElandReceiveBuff[1])
+        {
+        case ElandBegin:
+            display_map_58_6(10, 56, 10, "ElandStart");
+            break;
+        case ElandAPStatus:
+            display_map_58_6(10, 56, 10, "Eland_AP  ");
+            break;
+        case ElandHttpServerStatus:
+            display_map_58_6(10, 56, 10, "HttpServer");
+            break;
+        case ElandWifyConnectedStatus:
+            display_map_58_6(10, 56, 10, "wifi_OK   ");
+            break;
+        default:
+            break;
+        }
     }
 }
 

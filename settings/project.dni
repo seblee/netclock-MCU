@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1278717775
+Checksum=-1727612253
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -62,14 +62,15 @@ Placement=_ 738 379 1183 662
 [struct_types]
 Fmt0=uFLAG-BYTE	4	0
 [array_types]
-Fmt0=u8_t[12]	4	0
-Fmt1=u8_t[300]	4	0
-Fmt2=u8_t[40]	4	0
-Fmt3=uint32_t[6]	4	0
-Fmt4=unsigned char[4]	1	0
-Fmt5=unsigned int[100]	4	0
-Fmt6=unsigned int[25]	4	0
-Fmt7=unsigned int[3]	4	0
+Fmt0=u8_t[11]	4	0
+Fmt1=u8_t[12]	4	0
+Fmt2=u8_t[300]	4	0
+Fmt3=u8_t[40]	4	0
+Fmt4=uint32_t[6]	4	0
+Fmt5=unsigned char[4]	1	0
+Fmt6=unsigned int[100]	4	0
+Fmt7=unsigned int[25]	4	0
+Fmt8=unsigned int[3]	4	0
 [watch_formats]
 Fmt0={W}0:ADF7030_RESIGER_VALUE_READ	4	0
 Fmt1={W}0:COUNT_Receiver_Login	3	0
@@ -87,6 +88,8 @@ Fmt11={W}42:CCA_READBACK_Cache	4	0
 LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
+[Breakpoints]
+Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -94,9 +97,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\user_src\main.c}.79.9" 1 0 0 0 "" 0 ""
-Count=1
 [Aliases]
 Count=0
 SuppressDialog=0
