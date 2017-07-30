@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=-802575923
+Checksum=-198113024
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -96,10 +96,11 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\user_src\elandtime.c}.100.13" 1 0 0 0 "" 0 ""
-Count=1
-[Aliases]
 Count=0
+[Aliases]
+A0=_ "D:\MyCloud\Working\NetworkClock\neclock-MCU\user_src\Initial.c" ""
+A1=_ "D:\MyCloud\Working\NetworkClock\neclock-MCU\user_src\lcd.c" ""
+Count=2
 SuppressDialog=0
 [DebuggerSettings]
 DisableInterruptsWhenStepping=0
