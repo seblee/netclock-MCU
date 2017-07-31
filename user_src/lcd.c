@@ -287,8 +287,11 @@ void lcd_desplay(void)
         case ElandHttpServerStatus:
             display_map_58_6(10, 56, 10, "HttpServer");
             break;
-        case ElandWifyConnectedStatus:
+        case ElandWifyConnectedSuccessed:
             display_map_58_6(10, 56, 10, "wifi_OK   ");
+            break;
+        case ElandWifyConnectedFailed:
+            display_map_58_6(10, 56, 10, "wifiFailed");
             break;
         case ElandAliloPlay:
             display_map_58_6(10, 56, 10, "AliloPlay ");
