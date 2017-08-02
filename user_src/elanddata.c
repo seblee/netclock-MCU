@@ -1,5 +1,8 @@
 #include "elanddata.h"
 #include "rtc.h"
+#include "Pin_define.h"
+
+#include <iostm8l052c6.h> // CPU型号
 /****************/
 u8 ElandReceiveBuff[11] = {0, 0};
 u8 ElandReceiveBuffBak[11];
@@ -71,6 +74,10 @@ void processData(void)
     u8 i;
     if (ElandReceiveBuff[1] != ElandReceiveBuffBak[1])
         bRTC_Update_Flag = 1;
+    if ((ElandReceiveBuff[1] == ElandWifyConnectedSuccessed) || (ElandReceiveBuff[1] >= ElandWifyConnectedFailed))
+        LED_WIFI = LED_ON;
+    else
+        LED_WIFI = LED_OFF;
     for (i = 2; i < 10; i++)
     {
         if (ElandReceiveBuff[i] != ElandReceiveBuffBak[i])

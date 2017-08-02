@@ -9,7 +9,7 @@
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
 #include "Timer.h"
-
+//#include <iostm8l052c6.h> // CPU型号
 //以下是IO定义
 /********************LED寄存器*****************************************/
 #define LED_ON 1
@@ -29,6 +29,16 @@
 #define LED_BLUE_DDR PB_DDR_DDR4 //方向
 #define LED_BLUE_CR1 PB_CR1_C14  //类型
 #define LED_BLUE_CR2 PB_CR2_C24  //输出频率
+                 //PC_ODR_ODR5
+#define LED_WIFI PC_ODR_ODR5     //WIFI
+#define LED_WIFI_DDR PC_DDR_DDR5 //方向
+#define LED_WIFI_CR1 PC_CR1_C15  //类型
+#define LED_WIFI_CR2 PC_CR2_C25  //输出频率
+
+#define LED_2 PC_ODR_ODR6     //2
+#define LED_2_DDR PC_DDR_DDR6 //方向
+#define LED_2_CR1 PC_CR1_C16  //类型
+#define LED_2_CR2 PC_CR2_C26  //输出频率
 
 typedef enum {
     LED_RED_type = 0,
