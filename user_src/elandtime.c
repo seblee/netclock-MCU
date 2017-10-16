@@ -31,7 +31,7 @@ char TimeSetString[6][6] = {
 
 void InitTimeBuff(void)
 {
-
+    memset((char *)&SystemStartTime, 0, sizeof(iso8601_time_t));
     memcpy((char *)&SystemStartTime, "2017-07-20 14:26:00", sizeof("2017-07-20 14:26:00"));
 }
 /**
@@ -59,21 +59,21 @@ void ElandTimeSet(void)
         display_map_58_6(10, 32, 6, (const unsigned char *)&TimeSetString[ElandTimeSetStatus]);
         sprintf(Cache, "%02d", ElandTime_For_Set[ElandTimeSetStatus]);
         display_map_58_6(46, 32, 2, (const unsigned char *)Cache);
-        display_map_58_6(46 + ((1 - Time_Set_Select_Num) * 6), 40,2, "* ");
+        display_map_58_6(46 + ((1 - Time_Set_Select_Num) * 6), 40, 2, "* ");
         ElandTimeSetStatus = TIME_SET_YEAR;
     }
     else if (ElandTimeSetStatus == (u8)TIME_SET_SECOND)
     {
         if (Time_Set_Select_Num > 0)
         {
-            display_map_58_6(46, 40 ,2, " *");
+            display_map_58_6(46, 40, 2, " *");
             Time_Set_Select_Num--;
         }
         else
         {
             Time_Set_Select_Num = 1;
             display_map_58_6(10, 32, 8, "        ");
-            display_map_58_6(46, 40 ,2, "  ");
+            display_map_58_6(46, 40, 2, "  ");
             ElandTimeNow.year = 2000 + ElandTime_For_Set[0];
             ElandTimeNow.month = ElandTime_For_Set[1];
             ElandTimeNow.day = ElandTime_For_Set[2];
@@ -88,7 +88,7 @@ void ElandTimeSet(void)
     {
         if (Time_Set_Select_Num > 0)
         {
-            display_map_58_6(46, 40 ,2, " *");
+            display_map_58_6(46, 40, 2, " *");
             Time_Set_Select_Num--;
         }
         else
